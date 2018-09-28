@@ -11,6 +11,7 @@
           height: 510px;
           background-image: -webkit-image-set( url(img/moktrans.png) 1x, url(img/moktrans@2x.png) 2x);
           background-repeat: no-repeat;
+          background-position: center;
           margin-bottom: 1em;
         }
 
@@ -34,54 +35,146 @@
         .fa-caption {
             margin: 1em 0.5em 3em 0.5em;
         }
+
+        .imagebox {
+            text-align: center;
+            height: 110px;
+            max-height: 110px;
+            min-height: 110px;
+        }
+
+        .imagebox-picture {
+            position: relative;
+            bottom: 0px;
+        }
+
+        .info-box-header {
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.4em;
+        }
     </style>
 </head>
 <body>
 
-    <div class="jumbotron jumbotron-fluid parallax" data-parallax="scroll" data-image-src="img/layered_back.jpg">
+    <div class="jumbotron jumbotron-fluid parallax" data-parallax="scroll" data-image-src="img/scratch_back.jpg">
         <div class="container">
             <h1>The Little Messaging Book</h1> 
-            <p><i class="fa fa-book"></i> Getting started building robust .NET applications with Rebus</p> 
+            <p>Getting started building robust .NET applications with Rebus <i class="fa fa-book"></i></p> 
         </div>
     </div>
 
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-12">
-                <div class="fa fa-laptop fa-big"></div> 
+                <div class="imagebox">
+                    <img class="imagebox-picture" width="100" src="img/integration.png"/>
+                </div> 
                 <div class="fa-caption">
-                    If you are a programmer, and you are working
-                    on the .NET stack, this could be interesting for you.
+                    Do you wish for a programming model that lends itself
+                    well to the requirements of modern, integrated software
+                    systems?
                 </div>
             </div>
             <div class="col-md-4 col-sm-12">
-                <div class="fa fa-envelope fa-big"></div> 
+                <div class="imagebox">
+                    <img class="imagebox-picture" width="100" src="img/server-flash.png"/>
+                </div>
                 <div class="fa-caption">
                     Would you like to build systems that can survive anything from
-                    high load to server crashes using messaging?
+                    high load to server crashes?
                 </div>
             </div>
             <div class="col-md-4 col-sm-12">
-                <div class="fa fa-thumbs-up fa-big"></div> 
+                <div class="imagebox">
+                    <img class="imagebox-picture" width="100" src="img/cloud.png"/>
+                </div>
                 <div class="fa-caption">
-                    This book can help you on your way...
+                    Do you want to host your systems in the cloud, on-premise, or 
+                    would you like to be able to do both?
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-sm-12"></div>
-            <div class="col-md-4 col-sm-12">
-                <div class="book-image"></div>
+            <div class="col-md-12">
+                <b>The Little Messaging Book</b> gives an introduction to enterprise
+                integration in the form of messaging patterns, using the free open source
+                .NET service bus, <a href="https://github.com/rebus-org/Rebus">Rebus</a>,
+                for all examples. This way, the book can work as both an <b>introduction to
+                messaging</b> as well as an <b>implementation guideline</b> for Rebus developers.
             </div>
-            <div class="col-md-4 col-sm-12"></div>
+        </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+            <div class="col-md-2 col-sm-12"></div>
+            <div class="col-md-8 col-sm-12" style="text-align: center">
+                <div style="width: 100%" class="book-image"></div>
+
+                <div style="font-size: 1.7em; color: #888">
+                    <p style="font-size: 0.5em; margin-bottom: 0">
+                        Click here to
+                    </p>
+                    go read and/or download the book<br/>
+                    <p style="font-size: 0.5em">
+                        The book is currently in the process of being formatted
+                        such that it can be read online. Mailing list subscribers
+                        will be notified immediately, when it can be viewed.<br/><br/>
+                        If you're not currently a mailing list subscriber,
+                        you can <a href="http://eepurl.com/dIAGTH">sign up here</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12"></div>
+        </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <p>
+                    <b>Rebus</b> is a free open source .NET service bus. It comes
+                    in the form of a .NET library that provides ready-made, yet 
+                    flexible and extensible, implementations of several useful messaging
+                    patterns.
+                </p>
+                <p>
+                    <a href="https://github.com/rebus-org/Rebus">Read more about Rebus...</a>
+                </p>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <p>
+                    <b>Rebus Pro</b> is the commercial add-on to Rebus, which is the
+                    natural next step for bigger projects that require a formal support
+                    agreement and additional tooling.
+                </p>
+                <a href="https://rebus.fm/rebus-pro">Read more about Rebus Pro...</a>
+            </div>
         </div>
     </div>
 
-    <div class="jumbotron jumbotron-fluid parallax" data-parallax="scroll" data-image-src="img/layered_back.jpg">
+    <div class="row">&nbsp;</div>
+
+    <div class="jumbotron jumbotron-fluid parallax" data-parallax="scroll" data-image-src="img/scratch_back.jpg">
         <div class="container">
             <div class="row">
-                <center>How to get it?</center>
+                <div class="col-md-12">
+                    <p>
+                        <b>The Little Messaging Book</b> is written by Mogens Heller Grabe, 
+                        the author of <a href="https://github.com/rebus-org/Rebus">Rebus</a>. 
+                    </p>
+                    <p>
+                        If you want to know more about the Rebus project,
+                        please visit 
+                        <a href="https://github.com/rebus-org">the Rebus organization on GitHub</a>.
+                    </p>
+                    <p>
+                        For information about the commercial add-on to Rebus, please go 
+                        read about <a href="https://rebus.fm/rebus-pro">Rebus Pro</a>.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
