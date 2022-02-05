@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>The Little Messaging Book</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">The Little Messaging Book</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#who-am-i">Who am I?</a></li>
+<li><a href="#disclaimer-of-commercial-interests">Disclaimer of
+commercial interests</a></li>
+<li><a href="#disclaimer-of-non-creativity">Disclaimer of
+non-creativity</a></li>
+<li><a href="#architecture-quality-attributes">Architecture quality
+attributes</a></li>
+<li><a href="#messaging-patterns">Messaging patterns</a></li>
+<li><a
+href="#messaging-patterns-and-architecture-quality-attributes-together">Messaging
+patterns and architecture quality attributes together</a></li>
+<li><a href="#messaging-platforms">Messaging platforms</a>
+<ul>
+<li><a href="#synchronous-communication">Synchronous
+communication</a></li>
+<li><a href="#asynchronous-communication">Asynchronous communication</a>
+<ul>
+<li><a href="#durable-asynchronous-message-queues">Durable asynchronous
+message queues</a></li>
+<li><a
+href="#durable-asynchronous-message-queue-implementations">Durable
+asynchronous message queue implementations</a>
+<ul>
+<li><a href="#azure-storage-queues">Azure Storage Queues</a></li>
+<li><a href="#azure-service-bus">Azure Service Bus</a></li>
+<li><a href="#msmq">MSMQ</a></li>
+<li><a href="#rabbitmq">RabbitMQ</a></li>
+<li><a href="#amazon-sqs">Amazon SQS</a></li>
+<li><a href="#relational-databases">Relational databases</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#rebus">Rebus</a>
+<ul>
+<li><a href="#what-is-rebus">What is Rebus?</a></li>
+<li><a href="#the-rebus-philosopy">The Rebus Philosopy</a>
+<ul>
+<li><a href="#performance">Performance</a></li>
+<li><a href="#two-phase-commit">Two-phase commit</a></li>
+<li><a href="#at-least-once-delivery">At least once delivery</a></li>
+<li><a href="#idempotency">Idempotency</a>
+<ul>
+<li><a href="#consciously-ignore-it">Consciously ignore it</a></li>
+<li><a href="#natural-idempotence">Natural idempotence</a></li>
+<li><a href="#idempotency-by-expiration">Idempotency by
+expiration</a></li>
+<li><a href="#true-idempotency">True idempotency</a></li>
+</ul></li>
+<li><a href="#let-errors-happen">Let errors happen</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#configuration">Configuration</a>
+<ul>
+<li><a href="#two-bus-modes">Two bus modes</a></li>
+<li><a href="#realistic-example">Realistic example</a></li>
+<li><a href="#an-even-more-elaborate-example-not-to-follow">An even more
+elaborate example (not to follow)</a></li>
+<li><a href="#best-practice-to-follow">Best practice (to
+follow)</a></li>
+<li><a href="#integration-with-ioc-containers">Integration with IoC
+containers</a>
+<ul>
+<li><a href="#autofac">Autofac</a></li>
+<li><a href="#simpleinjector">SimpleInjector</a></li>
+<li><a href="#castle-windsor">Castle Windsor</a></li>
+<li><a href="#common-container-registrations">Common container
+registrations</a></li>
+<li><a href="#instance-lifestyle">Instance lifestyle</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#concepts">Concepts</a>
+<ul>
+<li><a href="#message">Message</a>
+<ul>
+<li><a href="#headers">Headers</a>
+<ul>
+<li><a href="#example-rebus-headers">Example Rebus headers</a></li>
+</ul></li>
+<li><a href="#body">Body</a></li>
+</ul></li>
+<li><a href="#queues">Queues</a>
+<ul>
+<li><a href="#input-queue">Input queue</a></li>
+<li><a href="#error-queue">Error queue</a></li>
+<li><a href="#a-few-words-about-subscriptionsbindings">A few words about
+subscriptions/bindings</a></li>
+</ul></li>
+<li><a href="#routing">Routing</a>
+<ul>
+<li><a href="#message-types">Message types</a>
+<ul>
+<li><a href="#command-messages">Command messages</a></li>
+<li><a href="#routing-commands">Routing commands</a></li>
+<li><a href="#event-messages">Event messages</a></li>
+<li><a href="#routing-events">Routing events</a></li>
+<li><a href="#subscription-storage">Subscription storage</a></li>
+<li><a href="#message-modeling">Message modeling</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#sagas">Sagas</a></li>
+<li><a href="#deferred-messages">Deferred messages</a>
+<ul>
+<li><a href="#local-timeout-manager">Local timeout manager</a></li>
+<li><a href="#external-timeout-manager">External timeout
+manager</a></li>
+</ul></li>
+<li><a href="#logging">Logging</a></li>
+<li><a href="#correlation-ids">Correlation IDs</a></li>
+</ul></li>
+<li><a href="#scenarios">Scenarios</a>
+<ul>
+<li><a href="#queue-up-work-to-cope-with-spikes-in-load">Queue up work
+to cope with spikes in load</a></li>
+<li><a href="#use-pubsub-messaging-to-decouple-systems">Use pub/sub
+messaging to decouple systems</a></li>
+<li><a href="#coordinate-asynchronous-processes-with-sagas">Coordinate
+asynchronous processes with sagas</a></li>
+<li><a href="#channel-adapters">Channel adapters</a>
+<ul>
+<li><a
+href="#enqueue-work-that-is-allowed-to-be-processed-asynchronously">Enqueue
+work that is allowed to be processed asynchronously</a></li>
+<li><a href="#publish-events-when-stuff-happens">Publish events when
+stuff happens</a></li>
+<li><a href="#receive-commands-and-reliably-process-them">Receive
+commands and reliably process them</a></li>
+<li><a href="#react-to-events-when-stuff-happens">React to events when
+stuff happens</a></li>
+</ul></li>
+<li><a href="#message-bridge">Message bridge</a>
+<ul>
+<li><a href="#into-the-cloud">Into the cloud</a></li>
+<li><a href="#out-of-the-cloud">Out of the cloud</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#unit-testing">Unit testing</a>
+<ul>
+<li><a href="#testing-message-handlers">Testing message
+handlers</a></li>
+<li><a href="#using-fakebus-to-record-bus-events">Using
+<code>FakeBus</code> to record bus events</a></li>
+<li><a href="#using-sagafixture-to-test-your-sagas">Using
+<code>SagaFixture</code> to test your sagas</a></li>
+<li><a href="#larger-units">Larger units</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="introduction">Introduction</h1>
+<p>Hello there, welcome to The Little Messaging Book. This is a book
+that can serve as an introduction to messaging, and it might also
+contain little nuggets of inspiration for fairly seasoned messaging
+implementors too.</p>
+<p>The book is targeted at software developers, who are interested in
+getting started building systems using messaging – most likely in .NET
+using Rebus – but parts of it are written without specific technologies
+or platforms in mind, so there might be some words of more general
+wisdom in it too.</p>
+<p>After reading this book, you should have a general understanding of
+which mechanisms are involved in a messaging-based system, and you
+should know what to Bingle for, when seeking further enlightenment.</p>
+<p>I will try to keep this book short 🙂 and I will use emojis here and
+there 🚀🧀🎺 and throughout this book I will refer to myself as “I” and
+“me”.</p>
+<h2 id="who-am-i">Who am I?</h2>
+<p>The book is written by me 🤓 My name is Mogens Heller Grabe. I was
+born in 1979 and I live in Horsens in Denmark with my wife and our two
+sons. In addition to messing with computers, I like to run, play squash
+and ping pong, brew beer, listen to music and play the guitar, usually
+only a few of them simultaneously.</p>
+<p>Throughout my career as a software developer, I have had an intense
+yet pragmatic interest in distributed systems, which means that I have
+always thought that message queues and databases were pretty cool, and I
+have always tried to use them to produce simpler and more wholesome
+software.</p>
+<p>In 2011, when I needed a “service bus” (I’ll get back to that later
+on 🙂) I went and made my own: <strong>Rebus</strong>. I will talk a lot
+about Rebus in this book.</p>
+<h2 id="disclaimer-of-commercial-interests">Disclaimer of commercial
+interests</h2>
+<p>After having enjoyed working with Rebus professionally as a
+consultant for 5-6 years, helping clients support their businesses with
+messaging, I decided to start a company primarily devoted to helping
+software developers get a luxurious Rebus experience: <a
+href="https://rebus.fm/">Rebus FM</a> – “Rebus Fleet Management”.</p>
+<p>This means I make a living out of selling <a
+href="https://pro.rebus.fm">Rebus Pro</a> subscriptions, which consists
+of a support agreement and <a
+href="https://pro.rebus.fm/#fleet-manager">a “Fleet Manager”</a> (for
+managing your fleet of buses…), which in turn means that I have a
+commercial interest in spreading the word about Rebus.</p>
+<p>I am an open source hippie 🌻 by heart though. Rebus and all of its
+integration libraries would not be where they are today without the 100+
+contributors, who have contributed with their comments, suggestions,
+pull requests, etc, so I promise that Rebus will always be free for
+everyone to use! 🚌</p>
+<h2 id="disclaimer-of-non-creativity">Disclaimer of non-creativity</h2>
+<p>The last thing I want to say in this introduction is this: <strong>I
+didn’t discover or invent anything</strong>.</p>
+<p>Rebus is based on ideas already implemented in NServiceBus, which is
+another great .NET service bus implementation, and all of the messaging
+patterns are described in the literature, where “Enterprise Integration
+Patterns” by Gregor Hohpe and Bobby Woolf in my memory is the most
+prominent specimen.</p>
+<p>Some great writing about architecture quality attributes can be found
+in “Software Architecture In Practice” by Len Bass, Paul Clements, and
+Rick Kazman.</p>
+<p>Throughout this book I will assert and claim various things, and I
+will not bother to put in formal references. Chances are, if something I
+say sounds like it could be true and/or clever in some way, then it
+probably comes from one of the aforementioned books. 🙃</p>
+<p>A few times I might postulate something and say “In MY experience,
+bla bla bla (…)”, which is just a work-related injury that stems from
+having worked as a consultant for many years… – I’m so sorry 🙄</p>
+<p>This introduction is long enough already. Let’s go!</p>
+<h2 id="architecture-quality-attributes">Architecture quality
+attributes</h2>
+<p>Before we dive into messaging patterns, I think it makes sense to set
+up a tiny framework that we can use later on to describe properties and
+inherent qualities of the patterns discussed.</p>
+<p>The thing is: I am going to casually throw around words like
+“availability”, “scalability”, “maintainability”, etc.</p>
+<p>These words are “architecture quality attributes”, which are words
+that describe the non-functional properties of a system.</p>
+<p>There exists formal methods for evaluating these attributes, but
+since many of them are pretty fluffy in nature, my own personal
+experience is that it’s often sufficient to use the words to be able to
+describe trade-offs in verbal and written communication, and not
+necessarily evaluate them formally.</p>
+<p>Many of the quality attributes end with “ility”, e.g. “availability”,
+“durability”, etc., which is why they’re sometimes referred to as
+“ilities”.</p>
+<p>When you come across “ilities” in text, it <em>might</em> be an
+indication that there’s actually some though behind the architectural
+decisions that have been made 😉</p>
+<h2 id="messaging-patterns">Messaging patterns</h2>
+<p>When you’re designing distributed systems, it’s nice to be able to
+communicate clearly what your design consists of. That’s what messaging
+patterns are for: Communication!</p>
+<p>You <em>could</em> also think of messaging patterns as blocks of
+Lego, but that’s not the primary angle, in my opinion, because it’s the
+wrong way around.</p>
+<p>Messaging patterns should more be thought of as condensed
+descriptions of patterns, which have emerged from anthropological
+studies of successful software systems. Thus they’re just a way to
+explain which concepts and contraptions were involved in solving some
+particular problem, thus contributing to building successful
+software.</p>
+<p>It doesn’t mean that software will automatically be successful, if
+you can recognize a long list of patterns in it. But if your system IS
+successful – from an engineering point of view – I bet you can. 🙂</p>
+<p>In this book, several well-known messaging patterns will be mentioned
+and/or explained to some degree with concrete examples on how they are
+manifested in code using Rebus as an example.</p>
+<h2
+id="messaging-patterns-and-architecture-quality-attributes-together">Messaging
+patterns and architecture quality attributes together</h2>
+<p>Armed with the vocabularies provided by these two areas, I can make
+statements like “Using <strong>competing consumers</strong> in this
+situation improves <strong>availability</strong> and
+<strong>scalability</strong> at the expense of making
+<strong>deployability</strong> slightly more involved”, and then this
+pretty condensed sentence will actually make sense to the right
+audience.</p>
+<p>Being able to do that can be pretty great, because then you can
+document why certain decisions have been made, and you can explain the
+layout of areas of your architecture, sometimes entire subsystems, in a
+tight, condensed, and unambiguous language.</p>
+<h2 id="messaging-platforms">Messaging platforms</h2>
+<p>When you’re designing distributed systems, it’s nice if the
+independent components that make our your system are able to
+communicate.</p>
+<p>This usually involves some kind of remoting, e.g. in the form of HTTP
+APIs and message queues. Another way to look at it, would be to divide
+the communication into whether it’s <em>synchronous</em> or
+<em>asynchronous</em>.</p>
+<h3 id="synchronous-communication">Synchronous communication</h3>
+<p>Synchronous communication can be had in many ways, e.g. in the form
+of various Remote Procedure Call (RPC) protocols, or in the form of the
+ubiquitous HTTP protocol.</p>
+<p>Even though your concrete RPC protocol or HTTP API might offer an
+asynchronous programming API, they’re still synchronous for the sake of
+this discussion in that they all require the caller to stay put somehow,
+until a reponse is received.</p>
+<p>Another way to see it is this: If a client holds transient state
+after having sent a request, then the protocol is synchronous.</p>
+<h3 id="asynchronous-communication">Asynchronous communication</h3>
+<p>Truly asynchronous communication can only be had if some kind of
+<em>messaging middleware</em> is involved, i.e. a mediating party must
+somehow help with preserving state in the face of failures like coding
+errors, resource depletion, network interruptions, hardware failures,
+power loss, etc etc etc 😱</p>
+<p>Messaging middleware often provides its service in the form of
+<em>durable asynchronous message queues</em> as its most basic
+communication channel, and that is exactly the type of channel this book
+is about.</p>
+<h4 id="durable-asynchronous-message-queues">Durable asynchronous
+message queues</h4>
+<p>To be entirely clear, let’s go through each word and see what they
+imply:</p>
+<p><em>“Durable”</em> because the queue’s data is not lost, even though
+processes crash or someone accidentally pulls the power cord out of the
+socket. This implies that messages are stored in persistent storage
+somehow, usually in a database or in the file system.</p>
+<p><em>“Asynchronous”</em> because you can put a message into the queue,
+and you do NOT have to wait until the receiver gets the message – you’re
+free to send as many messages as you like, usually as fast as you can
+produce them, and the middleware will simply enqueue the messages. This
+also means that if you want to get a reply, you need to wait for it
+using another channel.</p>
+<p><em>“Message”</em> because the queue’s data consists of little
+meaningful data nuggets, which we call “messages” (more about that
+later), to which we add whichever semantic feels appropriate in a given
+context.</p>
+<p><em>“Queue”</em> because the nuggets go into one end and come out of
+the other, usually in the order they entered. You can also call that a
+First-In-First-Out (FIFO) queue. Logically you can think of the queue as
+an unbounded buffer that accepts messages as fast as they’re produced,
+and delivers messages as fast as they’re consumed.</p>
+<h4 id="durable-asynchronous-message-queue-implementations">Durable
+asynchronous message queue implementations</h4>
+<p>Durable asynchronous message queues can be had in different
+technological flavors, where each specific implementation carries with
+it certain properties around the level of availability they provide,
+which operations story they offer, etc.</p>
+<p>Moreover, if you’re hosting your software in a cloud somewhere
+(e.g. AWS or Azure) it can be beneficial to make use of a message queue
+implementation provided by that particular cloud.</p>
+<p>For example: If you’re running in Azure, you probably want to take a
+look at <a
+href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview">Azure
+Service Bus</a> or <a
+href="https://docs.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction">Azure
+Storage Queues</a>.</p>
+<p>If your system is running in AWS, you probably want to use <a
+href="https://aws.amazon.com/sqs/">Amazon SQS</a>.</p>
+<p>If your software is running on a machine in your closet or in a
+hosting center somewhere, you might want to use <a
+href="https://en.wikipedia.org/wiki/Microsoft_Message_Queuing">MSMQ</a>
+(if you’re in a classic Windows Server domain-based environment) or <a
+href="https://www.rabbitmq.com/">RabbitMQ</a>.</p>
+<p>Or maybe your message queue requirements are modest, and you care
+more about operational simplicity, and the only thing you have in the
+world is a SQL Server/PostgreSQL/Oracle installation – then those
+databases can luckily also be used as if they were “real” message
+queues.</p>
+<p>The concrete technology involved does not matter much – what matters
+is that you have durable asynchronous message queues (in one form or
+another) at your disposal, because with those we can build some pretty
+magnificent pieces of software 🙏</p>
+<p>The following sections will just briefly introduce a couple of the
+popular queuing systems.</p>
+<h5 id="azure-storage-queues">Azure Storage Queues</h5>
+<p>Azure Storage Queues is the most basic queue implementation
+integrated in the Azure platform. It is part of an ordinary storage
+account, along with tables and blobs, and as such it is very inexpensive
+to work with, and capable of storing many many GBs of messages.</p>
+<p>It is also pretty crude in some regards – e.g. its basic API involves
+polling for messages, meaning that the consuming code probably needs to
+implement some kind of back-off behavior to avoid paying for too many
+unnecessary HTTP requests.</p>
+<p>Moreover, it doesn’t support any kind of multicast messages
+(i.e. sending one message to multiple queues), so if you e.g. want to
+implement the classic publish/subscribe (“pub/sub”) pattern directly on
+top of Azure Storage Queues, then you need to either a) implement your
+own handling of subscriptions, or b) use a library like Rebus, that
+provides this particular mechanism.</p>
+<p>At the same time, it has some pretty sophisticated features – e.g. it
+has native support for “visibility delay”, i.e. being able to send a
+message “into the future”.</p>
+<p>Azure Storage Queues has lease-based message transactions, which
+means that a message is not deleted when it is received, it is just
+invisible to other consumers for a while. If the recipient then
+acknowledges (“ACKs”) the message within that timeframe, the message
+gets deleted. If not, the message becomes visible again for other
+consumers to receive. This way, it’s possible to build software that
+NEVER loses a message.</p>
+<h5 id="azure-service-bus">Azure Service Bus</h5>
+<p>Azure Service Bus is the next tier in Azure’s messaging offerings,
+bringing even more sophisticated routing capabilities and better APIs to
+the table.</p>
+<p>For example, it has native support for publish/subscribe messaging in
+the form of a topic-based model, features for dead-lettering, etc.</p>
+<p>Its API has two modes: A binary protocol (which is preferred, because
+it is “slimmer” and more optimized) and HTTPS (which may be used in
+scenarios where local IP filtering prevents reaching out to arbitrary
+TCP/IP things on the internet).</p>
+<p>The “Azure Service Bus” thing on Azure comes with a bunch of other
+stuff too, like e.g. the “Relay Service”, which is irrelevant in this
+context.</p>
+<p>Azure Service Bus also has some pretty non-standard features, like
+e.g. the ability to “query” messages received on a subscription for
+messages that satisfy some criteria.</p>
+<h5 id="msmq">MSMQ</h5>
+<p>MSMQ (or “Microsoft Message Queuing”) is a queuing system, which is
+built into Windows. It has been available since Windows 2000, and it is
+still being updated from time to time. Unfortunately, Microsoft chose to
+skip the entire <code>System.Messaging</code> namespace when porting
+code from old .NET Framework to .NET Core/.NET, so there’s no longer
+support in .NET for using MSMQ.</p>
+<p>This is a shame, because MSMQ is pretty nice queuing system, and I
+know many companies around the world are still using it.</p>
+<p>To enable it in Windows, visit the appropriate “Add/Remove Windows
+Features” area of the Windows version you are using, and put a checkmark
+next to “Message Queuing”.</p>
+<p>MSMQ works best when all of the participating machines are part of
+the same Windows Domain. Actually, I have only heard bad things about
+when people try to make MSMQ communicate across network boundaries,
+e.g. in/out of a DMZ. This is particularly troublesome, because it might
+be possible to make MSMQ communicate properly for a while by disabling
+security on all queues and opening a bunch of ports, but then messages
+often stop flowing after a while because <em>nobody knows why!!</em>
+😩</p>
+<p>My advice is: Don’t do it. <em>Only use MSMQ when all machines are on
+the same Windows Domain.</em></p>
+<p>The good thing with MSMQ is that – provided that all machines are on
+the same domain – it has great availability (because there is no central
+server and all communication with the queuing system is local), is has
+great scalability (because there is no central server and messages are
+copied from machine to machine on a peer-to-peer basis), and it is
+extremely easy to operate because it’s basically self-tending.</p>
+<h5 id="rabbitmq">RabbitMQ</h5>
+<p>RabbitMQ is one of the most popular message brokers. It’s built in
+Erlang, it’s completely free, it has some pretty flexible features that
+allow for building queuing systems with high availability, and it is
+also pretty fast. Moveover, it delivers many ways for you to shoot your
+own leg off, so it’s a pretty interesting tool in that regard. 😜</p>
+<p>No, seriously: RabbitMQ is great, no doubt about it – but it has some
+pitfalls too, especially around its master-master cluster configuration.
+You should read <a
+href="https://aphyr.com/posts/315-jepsen-rabbitmq">what Kyle Kingsbury
+says</a> before diving into this mode of operation.</p>
+<p>To me, RabbitMQ is the quintessential AMQP implementation, although I
+think it implements some version of AMQP less than 1, which is a pretty
+different thing from AMQP 1.</p>
+<p>What this means is that RabbitMQ’s messaging model is build around
+the notion of “exchanges”, “topics”, and “queues”.</p>
+<p>An exchange is where you deliver your messages, and each message then
+has a “routing key” attached to it. The type of exchange then decides
+how the routing key is interpreted.</p>
+<p>If e.g. the exchange is of the “topic” type, then the routing key is
+interpreted as a topic, meaning that a copy of the message gets sent to
+all queues subscribed to that topic.</p>
+<p>That’s basically it 🙂 RabbitMQ can do more stuff, and even more if
+you extend it with plugins.</p>
+<h5 id="amazon-sqs">Amazon SQS</h5>
+<p>Amazon SQS is a pretty simple queuing system, which is part of AWS.
+It has a REST-based API and it supports the most basic queue operations,
+and one sophisticated feature: The ability to delay message delivery
+into the future.</p>
+<p>It does not have native publish/subscribe support, so you would have
+to manage subscriptions and message distribution yourself, if you wanted
+to so pub/sub messaging with it.</p>
+<h5 id="relational-databases">Relational databases</h5>
+<p>If all you have is a relational database (e.g. if your operations
+department are not keen on introducing message brokers and stuff into
+their pen), then you can simply use tables as if they were message
+queues.</p>
+<p>A message is just a chunk of data meant for some specific recipient
+to receive, so it’s pretty easy to come up with a model where
+e.g. tables represent queues and rows are messages, and then each
+recipient simply queries its own table for messages intended for it.</p>
+<p>In order to send a message to a specific recipient, you then simply
+insert a row into the recipient’s table.</p>
+<p>It requires another level of sophistication of course, if you want to
+allow for multiple recipients to take messages out of the same “queue”
+without accidentally handling the same message more than once, and you
+need some kind of protocol to handle “transactions” (i.e. the ability to
+handle a message without it being deleted no matter how the handling
+might fail).</p>
+<p>Also, if you have high message throughput requirements, a RDBMS might
+not be the best fit for the task, because the transaction log can
+quickly become quite big because of message churn.</p>
+<h2 id="rebus">Rebus</h2>
+<p>Now you have come this far. If you have read everything in the
+previous sections, then you might be filled with the impression that
+even though most queuing systems have many traits in common, they are
+also quite different in some regards, and they all come with their own
+best practives, caveats, etc.</p>
+<p>If that’s your impression, then you are absolutely correct.</p>
+<p>This is one of the areas where Rebus finds its justification. 😎
+Because Rebus lets you use a sensible subset of the functionality
+provided by the queuing systems, possibly “polyfilling” where features
+are missing, thus enabling a faily consistent experience, in turn making
+your code portable.</p>
+<p>If you think this sounds cool, read on! 👇</p>
+<h3 id="what-is-rebus">What is Rebus?</h3>
+<p>Rebus is a .NET library that comes in the form of a NuGet
+package.</p>
+<p>Rebus provides a programming model, where you – as a software
+developer interested in satisfying functional requirements – get to
+program message handlers and send and publish messages without worrying
+too much about the specifics of whichever queuing platform your system
+is actually running on.</p>
+<p>It does this by providing an abstraction based on common messaging
+patterns, and then you can make it run on some specific queues by
+configuring it to do that.</p>
+<p>For example, you can bring in the <code>Rebus.Msmq</code> NuGet
+package or the <code>Rebus.AmazonSQS</code> NuGet package and then
+decide whether to run on local MSMQ or AmazonSQS in AWS by means of
+changing this line:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseMsmq</span><span class="op">(</span><span class="st">&quot;my-queue&quot;</span><span class="op">))</span></span></code></pre></div>
+<p>to this line:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseAmazonSQS</span><span class="op">(...,</span> <span class="st">&quot;my-queue&quot;</span><span class="op">))</span></span></code></pre></div>
+<p>and back. Everywhere else in the code, there’s nothing that smells
+remotely like MSMQ or Amazon SQS, which is neat 🤗</p>
+<p>And then, when you want to exercise your code in a realistic
+integration test, but you want it to run on the build server too, you
+can change it to:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseInMemoryTransport</span><span class="op">(...,</span> <span class="st">&quot;my-queue&quot;</span><span class="op">))</span></span></code></pre></div>
+<p>because Rebus can run with in-memory queues too, without any
+additional NuGet packages.</p>
+<p>This way, systems built with Rebus can be made to be completely
+portable, allowing them to be moved between on-premise hosting and cloud
+hosting environments with minimal change, thus reducing the degree of
+lock-in to your cloud vendor.</p>
+<p>Rebus provides mechanisms to handle subscriptions too, making it
+possible to use publish/subscribe messaging and not care about whether
+subscriptions are stored in a SQL Server somewhere, or whether the
+chosen queuing technology has native support for pub/sub messaging.</p>
+<p>Same thing with messages “sent into the future” – with Rebus, you can
+just</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Defer</span><span class="op">(</span>TimeSpan<span class="op">.</span><span class="fu">FromMinutes</span><span class="op">(</span><span class="dv">5</span><span class="op">),</span> yourMessage<span class="op">);</span></span></code></pre></div>
+<p>to send your message and not have it delivered until after 5 minutes
+have passed, and then Rebus either uses the queuing system’s native
+ability to set the correct visibility timeout, or stores the message in
+a database somewhere to be delivered later.</p>
+<p>In addition to these things, Rebus provides a model for handling
+long-runnning processes (“sagas”, known in the literature as “process
+managers”) by taking care of message correlation, persistence, and
+concurrency.</p>
+<p>It handles serialization and deserialization of messages. It can GZIP
+message contents, if the messages are big. It can use its “data bus” to
+transfer huge attachments, if the messages would otherwise become too
+big to transfer over queues. It can encrypt message contents, if the
+messages are secret.</p>
+<p>It can perform a ridiculous amount of I/O work, using only one single
+thread and a tiny fraction of your CPU, because it is based on .NET
+<code>Task</code>s to the core, relying on .NET’s Task Parallel Library
+and the .NET thread pool to schedule their execution.</p>
+<p>Last, but not least: It’s quite pleasant to work with. Its error
+messages are explanatory and helpful. 😇</p>
+<p>All this comes at a price, of course: $ 0 (Rebus is MIT-licensed, and
+you can do with it whatever you want).</p>
+<h3 id="the-rebus-philosopy">The Rebus Philosopy</h3>
+<p>While Rebus is pretty flexible and extremely extensible in some
+regards, it does build on an opinionated view of the world.</p>
+<p>Specifically, the following sections explain how some of its quality
+attributes have been prioritized, which can help users better understand
+which scenarios it is good for.</p>
+<h4 id="performance">Performance</h4>
+<p>In most cases where a trade-off was required between performance and
+<em>some other factor</em>, Rebus has opted for optimizing the
+experience for the developer.</p>
+<p>In other words, on the scale between “extreme performance” and
+“safety of use”, Rebus has positioned itself around here:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>                                            ↓</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">[============================================================]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Extreme                                                 Safety</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>performance                                             of use</span></code></pre></div>
+<p>This means that many things are taken care of automatically, and
+there’s no built-in way to e.g. relax the durability of messages, reduce
+the level of delivery guarantee, etc. to achieve better performance.</p>
+<p>On the scale between “extreme performance” and “developer
+friendliness”, Rebus has positioned itself around here:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>                                                       ↓</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">[============================================================]</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Extreme                                              Developer</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>performance                                       friendliness</span></code></pre></div>
+<p>meaning that Rebus exposes programming APIs that are not necessarily
+the most efficient from a performance view, they are meant to be
+friendly to the developer and thus pleasant to use.</p>
+<p>On this last scale between “extreme performance” and “clean and
+testable code”, Rebus has positioned itself around here:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>                                                      ↓</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">[============================================================]</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Extreme                                              Clean and</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>performance                                      testable code</span></code></pre></div>
+<p>because Rebus goes to great lengths to prevent abstractions from
+leaking, or let you program your way into a corner in any other way, by
+tying yourself to the concrete technologies underneath Rebus, just to
+gain better performance.</p>
+<p><em>Conclusion</em>: If you’re in the messaging game for extreme
+performance, you should probably not pick Rebus.</p>
+<p>It does not mean that Rebus is slow, it just means that if your
+objective is to push the queuing system to its MAX, then you should
+probably not use Rebus for that… If, on the other hand, you care about
+solving business problems and writing maintainable and portable code,
+then you should definitely take a look at Rebus.</p>
+<h4 id="two-phase-commit">Two-phase commit</h4>
+<p>One of the initial design decisions in Rebus was that it should not
+ignore the <a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP
+theorem</a>.</p>
+<p>The CAP theorem states (roughly) that: When there’s trouble with the
+network communication in a distributed system, you can either have
+AVAILABILITY or CONSISTENCY.</p>
+<p>Here, choosing “availability” means that your system keeps working,
+but data in one place may be out of sync with data in another place.</p>
+<p>Conversely, choosing “consistency” would means that your system would
+NOT keep working, because it would NOT be able to keep data in sync
+across all places without the network communication that failed, so
+therefore it has no other choice than to STOP THE WORLD.</p>
+<p>The choice between AVAILABILITY and CONSISTENCY must be made in all
+situations where two or more parties are involved in a transaction of
+some kind – e.g. in a scenario where a message is received (1st
+transaction involves the queuing system) and some data in a database is
+updated (2nd transaction involves the database) – and it is a
+mathematical fact that both cannot be had.</p>
+<p>The two-phase commit protocol tries to achieve CONSISTENCY by means
+of implementing a protocol that consists of the following two steps
+after having done some work in multiple transactions:</p>
+<ol type="1">
+<li>Ask all transactions to prepare to commit. When a transaction
+acknowledges, it becomes frozen and GUARANTEES that it CAN be committed.
+This is the PREPARE phase.</li>
+<li>Provided that all transactions could successfully be prepared: Ask
+all transactions to commit. This is the COMMIT phase.</li>
+</ol>
+<p>This way, the risk that e.g. one transaction is committed and another
+one gets rolled back is minimized. The problem arises when something
+fails during the COMMIT phase, like e.g. the last party can suddenly not
+be communicated with, and therefore the transaction coordinator cannot
+tell it to commit.</p>
+<p>In this case, the coordinator hos no other choice than to leave the
+transaction hanging with any locks associated with it, i.e. it
+sacrifices AVAILABILITY in an attempt to achieve CONSISTENCY.</p>
+<p>When I say that Rebus should not ignore the CAP theorem, I mean that
+this brutal fact should not be ignored, and therefore it is better that
+developer do NOT rely on two-phase commit to do their work.</p>
+<p>With Rebus, you are encouraged to be conscious about the fact that
+the transactions are nested like this:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">/</span> begin queue <span class="fu">tx</span> <span class="op">(</span>i<span class="op">.</span><span class="fu">e</span><span class="op">.</span> receive message – make it invisible to others<span class="op">)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">/</span> begin <span class="st">&quot;work tx&quot;</span> <span class="op">(</span>your code defines what <span class="kw">this</span> <span class="kw">is</span><span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span> perform operations <span class="kw">in</span> <span class="st">&quot;work tx&quot;</span> <span class="kw">in</span> here</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  \ commit <span class="st">&quot;work tx&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>\ commit queue <span class="fu">tx</span> <span class="op">(</span>i<span class="op">.</span><span class="fu">e</span><span class="op">.</span> delete message from queue<span class="op">)</span></span></code></pre></div>
+<p>This also means that there is a small, but very real, risk that the
+following thing happens: After committing your “work tx” successfully
+(like e.g. incrementing a counter in your database), someone pulls the
+power cord out of the wall socket, and the system dies right before
+getting to commit the queue transaction – it would look like this:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">/</span> begin queue <span class="fu">tx</span> <span class="op">(</span>i<span class="op">.</span><span class="fu">e</span><span class="op">.</span> receive message – make it invisible to others<span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">/</span> begin <span class="st">&quot;work tx&quot;</span> <span class="op">(</span>your code defines what <span class="kw">this</span> <span class="kw">is</span><span class="op">)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span> increment counter <span class="kw">in</span> database</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  \ commit <span class="st">&quot;work tx&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">X</span> <span class="op">(...</span><span class="fu">power</span> cord was pulled<span class="op">!)</span></span></code></pre></div>
+<p>When the machine boots again and your system starts running again,
+the message will be received once more, and your counter will be
+incremented again – UNLESS YOU SPECIFICALLY ENSURE THAT THAT CANNOT
+HAPPEN. 🤔</p>
+<h4 id="at-least-once-delivery">At least once delivery</h4>
+<p>If you’ve read all the text up until this point, you have come across
+several examples of how message consumption is made safe, such that
+messages cannot be lost, even when message processing fails.</p>
+<p>Most queuing systems support some kind of protocol that allows for
+receiving each message in two steps:</p>
+<ol type="1">
+<li>Get the message,</li>
+<li>Acknowledge having handled the message.</li>
+</ol>
+<p>This way, if you don’t acknowledge (either by explicitly telling the
+queuing system to roll back the message transaction, or implicitly by
+just being silent about it), the message will become visible again to
+other consumers.</p>
+<p>With this simple protocol, we can ensure that the only way messages
+can disappear, is if they have been handled with success. We can do this
+by arranging the transaction the way we have seen before:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">/</span> begin queue <span class="fu">tx</span> <span class="op">(</span>i<span class="op">.</span><span class="fu">e</span><span class="op">.</span> receive message – make it invisible to others<span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">/</span> begin <span class="st">&quot;work tx&quot;</span> <span class="op">(</span>your code defines what <span class="kw">this</span> <span class="kw">is</span><span class="op">)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  <span class="op">|</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>  \ commit <span class="st">&quot;work tx&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>\ commit queue <span class="fu">tx</span> <span class="op">(</span>i<span class="op">.</span><span class="fu">e</span><span class="op">.</span> delete message from queue<span class="op">)</span></span></code></pre></div>
+<p>But it also means that there is a risk that your “work tx” can be
+executed more than once, as we have seen.</p>
+<p>This is called “at least once”-delivery, which means that messages
+are guaranteed to be delivered once, but you might be “lucky” to receive
+them more than once.</p>
+<p>Out of all of the available delivery guarantees</p>
+<ul>
+<li>“at most once”</li>
+<li>“exactly once”</li>
+<li>“at least once”</li>
+</ul>
+<p>we prefer “at least once”, because “at most once” means that messages
+will be LOST if something fails, and “exactly once” is IMPOSSIBLE (in
+the general case) as per <a
+href="https://en.wikipedia.org/wiki/CAP_theorem">the CAP theorem</a>
+🤥</p>
+<p>With “at least once”-delivery, we are guaranteed to get at least one
+chance to handle each message, so we just need to gracefully handle the
+case where a message gets handled twice (or more… 🤯)</p>
+<h4 id="idempotency">Idempotency</h4>
+<p>By now, it’s probably clear that “at least once”-delivery is
+preferred, because that is the only delivery guarantee that allows us to
+be sure that we get to handle each message and not risk losing one.</p>
+<p>What’s left now is to ensure that the world (i.e. our system) does
+not end up in the wrong state if we get to experience a re-delivered
+message. So how do we do that?</p>
+<p>In math, an “idempotent” operation is a function that yields the same
+result, no matter how many times it is called with the same input. We
+borrow this word, and then we aim for making our message handling
+itempotent!</p>
+<p>How we exactly go about doing that certainly depends a lot on which
+kind of work we are doing.</p>
+<h5 id="consciously-ignore-it">Consciously ignore it</h5>
+<p>In most cases, we generate a bunch of side effect that we can
+consciously choose to ignore.</p>
+<p>If e.g. your message handler outputs log statements to a set of files
+or a log aggregator, then the fact that the log statements go into the
+files or the aggregator is a side effect. But chances are that we only
+use this logging for debugging and statistics, so it doesn’t bring our
+system into a bad state that the same (or different?) log statements are
+generated during the processing of a re-delivered message.</p>
+<h5 id="natural-idempotence">Natural idempotence</h5>
+<p>In other cases, we may be so lucky that the nature of the work we are
+doing is naturally idempotent, or maybe we determine that the
+consequences of processing the same message twice are so insignificant
+that we don’t care about it.</p>
+<p>An example could be a handler that receives a
+<code>DeliveryAddressChanged</code> event and updates the delivery
+address of a portion of a specific order – if we processed this event
+twice, we would simply overwrite the delivery address with the same
+address, thus not actually changing the state of the order at all.</p>
+<p>Of course we can add more nuance to this scenario, e.g. if the
+handler published an <code>OrderChanged</code> event after processing
+the <code>DeliveryAddressChanged</code> event – because semantically it
+would be wrong: The order would not actually have been changed!</p>
+<h5 id="idempotency-by-expiration">Idempotency by expiration</h5>
+<p>In other cases, we might be so lucky (and pragmatic 😎) that our
+idempotency can be had simply by virtue of our data containing
+sufficiently relevant information to be able to discard
+redundant/expired information.</p>
+<p>For example if we look at the <code>DeliveryAddressChanged</code>
+event from before – now imagine that the event contains a timestamp of
+when the event was generated, and we stored the timestamp along with the
+delivery address on the order in our database.</p>
+<p>Our logic could then look like this:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(</span>timestampFromEvent <span class="op">&lt;=</span> timestampFromOrder<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ignore the event</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span><span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>thus ignoring re-delivered and outdated events.</p>
+<p>In fact, this solution has the nice property that it also handles
+re-ordered messages: Even though most message queues are FIFO, you
+should never count on FIFO in a strict mathematical sense, because many
+things in the real world can break that. For example, receiving messages
+concurrently (multiple processes and/or multiple threads), messages
+travelling over different routes thus taking different times to reach
+their destination, messages having spent time in “dead-letter queues”,
+etc.</p>
+<h5 id="true-idempotency">True idempotency</h5>
+<p>In some cases we need our handler to be truly idempotent.</p>
+<p>This can be implemented in several ways, e.g. the “brute
+force”-approach where we simply store message IDs of handled messages in
+our work database (with a unique constraint on the ID), so we can insert
+a row into this table when handling a message.</p>
+<p>We could then detect a re-delivered message by looking up the message
+ID, and then we can take appropriate measures if we detect a
+re-delivered message.</p>
+<h4 id="let-errors-happen">Let errors happen</h4>
+<p>Another design decision made in Rebus is that <em>you should not
+handle (most) errors</em>, you should let exceptions occur.</p>
+<p>Rebus will log exceptions as they happen, and if they keep happening
+when processing a specific message, that message will be moved to a
+“dead-letter queue” (also known as an “error queue”, and messages that
+cannot be consumed because of errors are often called “poison messages”)
+– this way, the message does not clog up the pipes, while it remains
+safely stored in a queue somewhere.</p>
+<h1 id="configuration">Configuration</h1>
+<p>When you want to configure Rebus in an application, the general
+pattern looks like this (assuming Microsoft’s generic host):</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">Use</span><span class="op">(...))</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.(...)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>or something like this (anywhere else):</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Configure<span class="op">.</span><span class="fu">With</span><span class="op">(...)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">Use</span><span class="op">(...))</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.(...)</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Start</span><span class="op">();</span></span></code></pre></div>
+<p>Configuring Rebus with a transport (i.e. a queuing system) is the
+minimum amount of configuration you can get away with.</p>
+<p>Of course the two previous code sample do not compile, but they show
+the necessary parts. If you’re using Azure Service Bus in a console
+application, a fully functional configuration could look like this (only
+omitting the actual connection string):</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="dt">var</span> activator <span class="op">=</span> <span class="kw">new</span> <span class="fu">BuiltinHandlerActivator</span><span class="op">();</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Configure<span class="op">.</span><span class="fu">With</span><span class="op">(</span>activator<span class="op">)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseAzureServiceBus</span><span class="op">(</span><span class="st">&quot;Endpoint=sb://(...)&quot;</span><span class="op">,</span> <span class="st">&quot;your-queue&quot;</span><span class="op">))</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Start</span><span class="op">();</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span><span class="st">&quot;Press ENTER to quit&quot;</span><span class="op">);</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>Console<span class="op">.</span><span class="fu">ReadLine</span><span class="op">();</span></span></code></pre></div>
+<p>which will start a Rebus instance that receives messages from the
+<code>your-queue</code> Azure Service Bus queue. It will automatically
+pick some sensible defaults, like e.g. using JSON message serialization,
+using one single thread to process incoming messages, etc.</p>
+<p>If you were using Micosoft’s generic host and therefore would use
+Microsoft DI as your application container, your configuration could
+look like this:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseAzureServiceBus</span><span class="op">(</span><span class="st">&quot;Endpoint=sb://(...)&quot;</span><span class="op">,</span> <span class="st">&quot;your-queue&quot;</span><span class="op">))</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>Rebus’ configuration mechanism relies on C#’s extension methods a
+lot, so whenever you</p>
+<pre class="psh"><code>install-package &lt;some-kind-of-rebus-package&gt;</code></pre>
+<p>chances are (at least if the package adheres to the usual patterns
+found within most Rebus packages) there will be imported extension
+methods into the <code>Rebus.Config</code> namespace. This way, if
+you’ve added</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Rebus<span class="op">.</span><span class="fu">Config</span><span class="op">;</span></span></code></pre></div>
+<p>at the top of your code file, the imported extension methods
+automatically become available. All of the official Rebus packages
+adhere to this pattern.</p>
+<h3 id="two-bus-modes">Two bus modes</h3>
+<p>Rebus can run in two modes</p>
+<ul>
+<li>“normal” mode – capable of both sending and receiving messages</li>
+<li>“one-way client” model – only capably of SENDING messages</li>
+</ul>
+<p>The configuration shown above uses the transport configuration
+extension</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>t<span class="op">.</span><span class="fu">UseAzureServiceBus</span><span class="op">(</span>connectionString<span class="op">,</span> <span class="st">&quot;your-queue&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>which implies that there’s an input queue called
+<code>your-queue</code>, hence it is capable of receiving messages. To
+configure a one-way client with Azure Service Bus, I would use the</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>t<span class="op">.</span><span class="fu">UseAzureServiceBusAsOneWayClient</span><span class="op">(</span>connectionString<span class="op">)</span></span></code></pre></div>
+<p>extension instead.</p>
+<h2 id="realistic-example">Realistic example</h2>
+<p>To show a more realistic example, one could imagine a Rebus endpoint
+hosted with Microsoft’s generic host in a web app, using RabbitMQ as the
+transport, Microsoft DI to instantiate message handlers, enabling
+compression, using SQL Server to store sagas and timeouts – it could
+look like this:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> builder <span class="op">=</span> WebApplication<span class="op">.</span><span class="fu">CreateBuilder</span><span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">// add other things, e.g.</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddRazorPages</span><span class="op">();</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">// add Rebus</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> cfg <span class="op">=</span> builder<span class="op">.</span><span class="fu">Configuration</span><span class="op">;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> rabbit <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;RabbitMq&quot;</span><span class="op">);</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> mssql <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;SqlServer&quot;</span><span class="op">);</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseRabbitMq</span><span class="op">(</span>rabbitmq<span class="op">,</span> <span class="st">&quot;your-queue&quot;</span><span class="op">))</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Sagas</span><span class="op">(</span>s <span class="op">=&gt;</span> s<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> <span class="st">&quot;Sagas&quot;</span><span class="op">,</span> <span class="st">&quot;SagaIndex&quot;</span><span class="op">))</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Timeouts</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> <span class="st">&quot;Timeouts&quot;</span><span class="op">))</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Options</span><span class="op">(</span>o <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">EnableCompression</span><span class="op">(</span>bodySizeThresholdBytes<span class="op">:</span> <span class="dv">32768</span><span class="op">);</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">SetNumberOfWorkers</span><span class="op">(</span>numberOfWorkers<span class="op">:</span> <span class="dv">4</span><span class="op">);</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">SetMaxParallelism</span><span class="op">(</span>maxParallelism<span class="op">:</span> <span class="dv">25</span><span class="op">);</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">})</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebusHandler</span><span class="op">&lt;</span>MyMessageHandler<span class="op">&gt;();</span></span></code></pre></div>
+<h2 id="an-even-more-elaborate-example-not-to-follow">An even more
+elaborate example (not to follow)</h2>
+<p>While the example in the previous section might be fairly realistic
+in what it configures, you will probably want to pull out various things
+into the application’s configuration file.</p>
+<p>In doing this, the configuration can quickly become hard to oversee,
+because so many things end up being configured.</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> builder <span class="op">=</span> WebApplication<span class="op">.</span><span class="fu">CreateBuilder</span><span class="op">(</span>args<span class="op">);</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">// add other things, e.g.</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddRazorPages</span><span class="op">();</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">// add Rebus</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> cfg <span class="op">=</span> builder<span class="op">.</span><span class="fu">Configuration</span><span class="op">;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> rabbit <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;RabbitMq&quot;</span><span class="op">);</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> mssql <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;SqlServer&quot;</span><span class="op">);</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> settings <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetSection</span><span class="op">(</span><span class="st">&quot;AppSettings&quot;</span><span class="op">);</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> inputQueueName <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;(</span><span class="st">&quot;RebusQueueName&quot;</span><span class="op">);</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> gzipThreshold <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;GzipThresholdBytes&quot;</span><span class="op">);</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> numWorkers <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;RebusNumberOfWorkers&quot;</span><span class="op">);</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> maxParallelism <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;RebusMaxParallelism&quot;</span><span class="op">);</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> timeoutsTableName <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;(</span><span class="st">&quot;RebusTimeoutsTableName&quot;</span><span class="op">);</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> sagasTable <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;(</span><span class="st">&quot;RebusSagasTableName&quot;</span><span class="op">);</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> indexTable <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;(</span><span class="st">&quot;RebusSagaIndexTableName&quot;</span><span class="op">);</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">Services</span><span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseRabbitMq</span><span class="op">(</span>rabbitmq<span class="op">,</span> inputQueueName<span class="op">))</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Sagas</span><span class="op">(</span>s <span class="op">=&gt;</span> s<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> sagasTable<span class="op">,</span> indexTable<span class="op">))</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Timeouts</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> timeoutsTableName<span class="op">))</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Options</span><span class="op">(</span>o <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">EnableCompression</span><span class="op">(</span>bodySizeThresholdBytes<span class="op">:</span> gzipThreshold<span class="op">);</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">SetNumberOfWorkers</span><span class="op">(</span>numberOfWorkers<span class="op">:</span> numWorkers<span class="op">);</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>                o<span class="op">.</span><span class="fu">SetMaxParallelism</span><span class="op">(</span>maxParallelism<span class="op">:</span> maxParallelism<span class="op">);</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">})</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebusHandler</span><span class="op">&lt;</span>MyMessageHandler<span class="op">&gt;();</span></span></code></pre></div>
+<h2 id="best-practice-to-follow">Best practice (to follow)</h2>
+<p>It’s pretty simple: Move most of the Rebus configuration bits out
+into extension methods, which you then share between your applications
+using a NuGet package.</p>
+<p>In countless projects, I’ve had extension methods in place that would
+allow me to do this:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> services <span class="op">=</span> builder<span class="op">.</span><span class="fu">Services</span><span class="op">;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> configuration <span class="op">=</span> builder<span class="op">.</span><span class="fu">Configuration</span><span class="op">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">AsServer</span><span class="op">(</span><span class="st">&quot;my-queue-name&quot;</span><span class="op">,</span> configuration<span class="op">)</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>where <code>AsServer</code> could then look like this (pretending to
+be using RabbitMQ + SQL Server as in the previous example):</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">static</span> <span class="kw">class</span> ServiceCollectionRebusExtensions</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> RebusConfigurer <span class="fu">AsServer</span><span class="op">(</span><span class="kw">this</span> RebusConfigurer configurer<span class="op">,</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">string</span> queueName<span class="op">,</span> IConfiguration configuration<span class="op">)</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> rabbit <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;RabbitMq&quot;</span><span class="op">);</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> mssql <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetConnectionString</span><span class="op">(</span><span class="st">&quot;SqlServer&quot;</span><span class="op">);</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> settings <span class="op">=</span> cfg<span class="op">.</span><span class="fu">GetSection</span><span class="op">(</span><span class="st">&quot;AppSettings&quot;</span><span class="op">);</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> gzipThreshold <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;GzipThresholdBytes&quot;</span><span class="op">);</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> numWorkers <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;RebusNumberOfWorkers&quot;</span><span class="op">);</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> maxParallelism <span class="op">=</span> settings<span class="op">.</span><span class="fu">GetValue</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;(</span><span class="st">&quot;RebusMaxParallelism&quot;</span><span class="op">);</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> timeoutsTableName <span class="op">=</span> settings<span class="op">[</span><span class="st">&quot;RebusTimeoutsTableName&quot;</span><span class="op">];</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> sagasTable <span class="op">=</span> settings<span class="op">[</span><span class="st">&quot;RebusSagasTableName&quot;</span><span class="op">];</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">var</span> indexTable <span class="op">=</span> settings<span class="op">[</span><span class="st">&quot;RebusSagaIndexTableName&quot;</span><span class="op">];</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> configurer</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseRabbitMq</span><span class="op">(</span>rabbit<span class="op">,</span> queueName<span class="op">))</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Sagas</span><span class="op">(</span>s <span class="op">=&gt;</span> s<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> sagasTable<span class="op">,</span> indexTable<span class="op">))</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Timeouts</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(</span>mssql<span class="op">,</span> timeoutsTableName<span class="op">))</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Options</span><span class="op">(</span>o <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>                    o<span class="op">.</span><span class="fu">EnableCompression</span><span class="op">(</span>bodySizeThresholdBytes<span class="op">:</span> gzipThreshold<span class="op">);</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>                    o<span class="op">.</span><span class="fu">SetNumberOfWorkers</span><span class="op">(</span>numberOfWorkers<span class="op">:</span> numWorkers<span class="op">);</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>                    o<span class="op">.</span><span class="fu">SetMaxParallelism</span><span class="op">(</span>maxParallelism<span class="op">:</span> maxParallelism<span class="op">);</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">});</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Of course this extension method might look a little bit overwhelming,
+but it’s neat in the sense that it helps with keeping Rebus
+configurations consistent across projects, and it hides all of the
+nitty-gritty parts of applying configuration.</p>
+<h2 id="integration-with-ioc-containers">Integration with IoC
+containers</h2>
+<p>At the time of writing this (it’s 2022 🙂), I would say the
+recommended IoC/DI container is Microsoft’s own, aptly named “Service
+Provider” (or “Microsoft.Extensions.DependencyInjection”), as it has
+quickly become very widespread. You will automatically be using it if
+you’re starting out with any of the new project templates for .NET
+Core/.NET for either web apps, daemon apps, or console jobs, because
+Microsoft’s generic host uses it internally. Also, it’s a pretty neat
+container that can do most of what even seasoned DI container users
+want</p>
+<p>The code samples shown so far with</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.(...))</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>have been based on the Rebus.ServiceProvider NuGet package, which is
+Rebus’ integration with Microsoft’s DI container. In the following
+sections a few alternative containers will be presented.</p>
+<h3 id="autofac">Autofac</h3>
+<p>Using Rebus together with Autofac is as simple as installing the
+Rebus.Autofac NuGet package, and then you can configure Rebus by
+going</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">RegisterRebus</span><span class="op">(</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.(...))</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>on the container builder. If you need to resolve something from the
+container to configure the bus, there’s an overload that passes
+<code>IComponentContext</code> to the configuration function, so you can
+do something like this:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">RegisterRebus</span><span class="op">(</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>configure<span class="op">,</span> context<span class="op">)</span> <span class="op">=&gt;</span> configure</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Logging</span><span class="op">(</span>l <span class="op">=&gt;</span> l<span class="op">.</span><span class="fu">Serilog</span><span class="op">(</span>context<span class="op">.</span><span class="fu">Resolve</span><span class="op">&lt;</span>Serilog<span class="op">.</span><span class="fu">ILogger</span><span class="op">&gt;()))</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">var</span> settings <span class="op">=</span> context<span class="op">.</span><span class="fu">Resolve</span><span class="op">&lt;</span>IBusSettings<span class="op">&gt;();</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>            t<span class="op">.</span><span class="fu">UseAzureServiceBus</span><span class="op">(</span>settings<span class="op">.</span><span class="fu">ConnectionString</span><span class="op">,</span> settings<span class="op">.</span><span class="fu">InputQueueName</span><span class="op">);</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">})</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>Please note that Rebus will start itself (i.e. it will begin
+consuming messages) when the container is built, so</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> container <span class="op">=</span> builder<span class="op">.</span><span class="fu">Build</span><span class="op">();</span></span></code></pre></div>
+<p>is where the action begins. If you want to delay starting the bus to
+some other time, you can set <code>startAutomatically: false</code> when
+registering it</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>builder<span class="op">.</span><span class="fu">RegisterRebus</span><span class="op">(</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.(...)),</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    startAutomatically<span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>and then you can build the container</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> container <span class="op">=</span> builder<span class="op">.</span><span class="fu">Build</span><span class="op">();</span></span></code></pre></div>
+<p>without starting the bus. The bus will be created and everything, it
+will just have 0 workers active. When you then think it’s time to get
+started, you can call the</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">StartBus</span><span class="op">();</span></span></code></pre></div>
+<p>extension method.</p>
+<h3 id="simpleinjector">SimpleInjector</h3>
+<p>Using Rebus together with SimpleInjector is as simple as importing
+the Rebus.SimpleInjector NuGet package, and then you can configure Rebus
+by adding code like</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">RegisterRebus</span><span class="op">(</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>T <span class="op">=&gt;</span> t<span class="op">.(...))</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>to your application. When using SimpleInjector, it’s customary to
+call</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">Verify</span><span class="op">();</span></span></code></pre></div>
+<p>at some point after having made all of the necessary registrations,
+but before the application starts resolving anything from it. This will
+make SimpleInjector iterate over all of its registrations and resolve
+them to see, if they can in fact be resolved.</p>
+<p>By default, Rebus will start itself at this point! If this is not
+what you want, set <code>startAutomatically: false</code> when
+registering the bus:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">RegisterRebus</span><span class="op">(</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>T <span class="op">=&gt;</span> t<span class="op">.(...)),</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    startAutomatically<span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>and then call the</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">StartBus</span><span class="op">();</span></span></code></pre></div>
+<p>extension method when the app is ready to start receiving
+messages.</p>
+<h3 id="castle-windsor">Castle Windsor</h3>
+<p>While I don’t use it for new projects anymore, this IoC container is
+near and dear to my heart, because it’s the first one I was introduced
+to, and the first one I learned to use.</p>
+<p>In opposition to other more modern containers, Castle Windsor does
+not have a clear separation between the registration phase and the
+resolution phase, which seems to have become best practice for most
+sensible containers.</p>
+<p>This also means that the container provides no obvious time for Rebus
+to start itself, and so you must take care of that yourself. You can use
+Castle Windsor together with Rebus by importing the Rebus.Castle.Windsor
+NuGet package, and then you configure it like this:</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">// container is IWindsorContainer</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>Configure<span class="op">.</span><span class="fu">With</span><span class="op">(</span><span class="kw">new</span> <span class="fu">CastleWindsorContainerAdapter</span><span class="op">(</span>container<span class="op">))</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.(...))</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Start</span><span class="op">();</span></span></code></pre></div>
+<p>which will configure Rebus and start it immediately! If this is not
+what you want, you can delay starting the bus to some other time by
+calling <code>Create</code> at the end like this:</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">// container is IWindsorContainer</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> starter <span class="op">=</span> Configure<span class="op">.</span><span class="fu">With</span><span class="op">(</span><span class="kw">new</span> <span class="fu">CastleWindsorContainerAdapter</span><span class="op">(</span>container<span class="op">))</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.(...))</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">Create</span><span class="op">();</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">// starter is IBusStarter    </span></span></code></pre></div>
+<p>and then call</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>starter<span class="op">.</span><span class="fu">Start</span><span class="op">();</span></span></code></pre></div>
+<p>when it suits you.</p>
+<p>The Rebus.Castle.Windsor NuGet package can also help you register
+your Rebus handlers, e.g. with the <code>RegisterHandler&lt;&gt;</code>
+method:</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">RegisterHandler</span><span class="op">&lt;</span>SomeMessageHandler<span class="op">&gt;();</span></span></code></pre></div>
+<p>which will register <code>SomeMessageHandler</code> in the correct
+way. A couple of assembly-scanning autoregistration helpers are also
+available, so e.g.</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>container<span class="op">.</span><span class="fu">AutoRegisterHandlersFromAssemblyOf</span><span class="op">&lt;</span>SomeMessageHandler<span class="op">&gt;();</span></span></code></pre></div>
+<p>will scan the entire assembly that <code>SomeMessageHandler</code>
+resides in, registering all of the found Rebus handlers in the
+container.</p>
+<p>If you make use of any of the assembly-scanning autoregistration
+methods, please back your code up by automated tests that verify that
+all of the expected message handlers have been found and registered as
+expected.</p>
+<h3 id="common-container-registrations">Common container
+registrations</h3>
+<p>Regardless of which IoC container integration package you are using,
+the package will make the following registrations in the container:</p>
+<ul>
+<li><code>IBus</code>: Rebus’ main interface which you’ll resolve to
+send/publish messages, etc.</li>
+<li><code>ISyncBus</code>: Rebus’ synchronous API – holds synchronous
+versions of all <code>IBus</code> methods, i.e. instead of returning
+<code>Task</code> they’re just <code>void</code> method</li>
+<li><code>IMessageContext</code>: Rebus’ message context – can ONLY be
+resolved when inside a Rebus message handler</li>
+</ul>
+<h3 id="instance-lifestyle">Instance lifestyle</h3>
+<p>Rebus (actually: the <code>RebusBus</code> instance, which is Rebus’
+implementation of <code>IBus</code>) is meant to be a singleton, which
+is created once and then disposed when your application shuts down. It’s
+important that it’s disposed properly, because it’ll allow for all
+currently active message handlers to finish what they’re doing before
+shutting down (of course without accepting any new messages in…)</p>
+<p>All of the available IoC container integration packages help with
+enforcing this, as the registered <code>IBus</code> implementation will
+be configured to be a singleton. Also, if the container provides any way
+of doing this, it will also automatically dispose the bus properly, when
+the container is disposed.</p>
+<h1 id="concepts">Concepts</h1>
+<p>In this chapter I’ll go through a couple of concepts and explain what
+they are, and then for each concept I will show how it’s represented in
+Rebus.</p>
+<h2 id="message">Message</h2>
+<p>What is a “message”?</p>
+<p>It’s pretty simply, really: A message is a discrete little nugget of
+information that lends itself well to be transported from a sender to a
+recipient.</p>
+<p>The sender and the recipient then agree, somehow, on some kind of
+protocol around this message – usually, this will include some kind of
+agreement that:</p>
+<ul>
+<li>the message has a “type”</li>
+<li>the message – depending on its type – carries with it some semantics
+of some kind</li>
+<li>the message – also depending on its type – carries with it the
+necessary information to be understood</li>
+</ul>
+<p>In order to implement this in a way that is practical when machines
+are also involved, you will almost always come across messages in the
+form of</p>
+<ul>
+<li>headers</li>
+</ul>
+<p>and</p>
+<ul>
+<li>body</li>
+</ul>
+<p>where the headers are stored in a general format (thus allowing them
+to be read by anyone), and the body is just raw data encoded in a format
+that is then specified by one of the headers.</p>
+<h3 id="headers">Headers</h3>
+<p>The thing that differentiates headers from the body of a message, is
+that the headers can be read and interpreted by anyone, because they’re
+represented in an already agreed-upon format, which is usually also
+supported by the queuing system.</p>
+<p>Headers are often as simple as a list of key-value pairs.</p>
+<p>Typical headers could be information like:</p>
+<ul>
+<li>message ID</li>
+<li>message type</li>
+<li>correlation ID</li>
+<li>content type</li>
+<li>…</li>
+</ul>
+<p>but also more esoteric user-provided information like:</p>
+<ul>
+<li>tenant ID (if the system is a multi-tenant environment)</li>
+<li>departmend ID (if messages can somehow be understood within the
+context of a specific department)</li>
+</ul>
+<p>or whatever the developers feels like.</p>
+<p>Leveraging the headers of messages flowing through systems can be a
+powerful way of extending the system with new cross-cutting features,
+but since it’s possible to mess up things in hard-to-debug ways, it is
+generally advised to leave the headers alone. ☠️</p>
+<h4 id="example-rebus-headers">Example Rebus headers</h4>
+<p>All of the normal Rebus header keys can be found as constants on the
+<code>Headers</code> class, e.g. like <code>Headers.MessageId</code> and
+<code>Headers.ContentType</code>.</p>
+<p>Here’s an example of some headers found on a typical Rebus message
+along with an explanation of each:</p>
+<p><code>rbs2-msg-id</code>:
+<code>29f9b537-1bf2-42e9-9049-86b3f38836b0</code></p>
+<p>The message ID is automatically provided by Rebus whenever you send
+or publish a message. It defaults to
+<code>Guid.NewGuid().ToString()</code>, which means that you are sure to
+get a globally unique ID for every single message.</p>
+<p>If you want, you can override this header, by setting it to something
+yourself – but please be careful that you understand how Rebus tracks
+failed messages (and how Fleet Manager correlates activity for each
+message, if you’re using Fleet Manager!), before you get too creative
+with customized message IDs. 👻</p>
+<p>When you publish an event, and the event is delivered to multiple
+subscribers (either because the transport supports multicast and
+delivers a copy to each, or because Rebus does the hard work of
+delivering each copy) the ID will be the same for all copies of that
+message.</p>
+<p><code>rbs2-intent</code>: <code>p2p</code></p>
+<p>The “intent” is an indication of <em>why</em> the message was sent.
+Possible values (automatically provided by Rebus) are <code>p2p</code>
+(“point-to-point”, meaning that the message was SENT to one specific
+recipient) and <code>pub</code> (“publish”, meaning that the message was
+published).</p>
+<p>This information is not used by Rebus, but it is can be useful in
+debugging situations to understand the origin of a consumed message.</p>
+<p><code>rbs2-return-address</code>:
+<code>payment-processor-backend@PRODSRV003</code></p>
+<p>This header is the “return address” for a message, which will be the
+queue that Rebus replies back to if the handler calls
+<code>await bus.Reply(...)</code>.</p>
+<p>The value defaults to be the input queue of the sender, but it’s
+possible (and entirely legal) to set the return address to another
+endpoint if needed.</p>
+<h3 id="body">Body</h3>
+<p>The message body then contains the actual contents of the
+message.</p>
+<p>It is usually necessary to decode the headers and use information
+about the message type, encoding, etc. to be able to correctly decode
+the body. This way, it’s possible to encode messages differently
+(e.g. use difference serializers, GZip some of the messages, maybe even
+encrypt them etc.), and then still be able to decode the message as a
+recipient.</p>
+<p>By default, Rebus will serialize messages as UTF8-encoded JSON and
+set their <code>rbs2-content-type</code> header to
+<code>application/json; encoding=utf-8</code> (which is the official
+MIME-standardized way of expressing that).</p>
+<h2 id="queues">Queues</h2>
+<p>When working with messaging systems, the most pervasive concept is
+that of a “queue”. You probably already have a pretty good grasp of the
+functionality that a queue can provide, but we’ll highlight the
+important properties here anyway, because they are key to building
+robust software.</p>
+<p>When we are talking about queues in this document, we mean queues
+that are ASYNCHRONOUS and DURABLE. “ASYNCHRONOUS” in the sense that they
+do not wait for anything else when accepting a sent message, and
+“DURABLE” in the sense that when they accept a sent message (and program
+execution is returned back to you, as a message sender) then the message
+is persisted somewhere (most likely on disk in a database file
+somewhere, or by virtue of having been replicated a number of times to
+multiple nodes in a cluster).</p>
+<p>These two properties lay the foundation for the most important
+guarantee that the queuing system provides:</p>
+<div style="text-align:center">
+<p>👉 <em>Messages – once sent – reach their destination</em> 👈</p>
+</div>
+<p>This is really important, because it makes it possible for us to
+build programs that communicate with other programs, possibly running in
+another process/on another machine/in another cloud, and expect their
+correspondence to remain unbroken, even when network connections come
+and go, and sometimes something explodes somewhere, but you have a
+backup, and your programs just resume when they left off when you reboot
+the machines or restore the backup. Cool!</p>
+<p>Most queues are FIFO (First-In-First-Out) by nature, i.e. messages
+end up being received in the order they were put in. While this property
+can be counted on as a loose property of the queue, it should NEVER be
+counted on in a strict sense, as many things can lead to messages being
+received and processed out-of-order.</p>
+<h3 id="input-queue">Input queue</h3>
+<p>When you’re working with Rebus, you will come across the concept of
+an “input queue”. There is nothing special about that queue, it’s just
+what we call the <strong>queue that a bus instance will receive messages
+from</strong>.</p>
+<p>A Rebus instance always has at most 1 input queue. If it doesn’t have
+an input queue, then it’s a “one-way client”, which is a bus instance
+that can only be used to send and publish messages.</p>
+<p>When a Rebus instance is started, it will check that its own input
+queue exists and create it if it doesn’t. It will then start consuming
+messages from it. It will go through ALL messages in the queue and try
+to handle them as best as it can.</p>
+<p>A common misconception is that Rebus can “filter” messages somehow,
+i.e. that it will only consume messages which it can handle. There’s no
+way (at least not generally with queuing systems) to skip receiving
+certain messages, and so Rebus will receive each and every message in
+the queue.</p>
+<p>Once received, it will try to process the message. Rebus will not
+know beforehand whether it can</p>
+<ul>
+<li>understand the headers</li>
+<li>deserialize the message</li>
+<li>find a handler for that particular message type</li>
+<li>dispatch the message to one or more handlers</li>
+</ul>
+<p>so, as you can see, receiving a message means that Rebus must also
+try to handle it.</p>
+<h3 id="error-queue">Error queue</h3>
+<p>Another queue with significance (but without any special properties –
+it’s just a normal queue), is the “error queue” – or the “dead-letter
+queue”, which is probably a more common term for it. For legacy reasons,
+Rebus calls is the “error queue”, and by default it will automatically
+create it in the form of a queue named “error”.</p>
+<p>When Rebus, for whatever reason, cannot handle a message it has
+received, it will move the message to the error queue to avoid having
+the message “clog the pipes”, so to speak. Rebus will default to make 5
+attempts at trying to handle the message before moving it to the error
+queue, so many transient errors can be overcome by this little bit of
+extra persistence.</p>
+<p>The attempts will happens very quickly through, as quickly as it
+can</p>
+<ul>
+<li>receive the message</li>
+<li>try to handle it</li>
+<li>catch the exception</li>
+<li>abort the message</li>
+</ul>
+<p>5 times in a row, and then – the 6th time it seems the same message –
+Rebus will attach a header to it containing all of the caught exception
+details, and move the message to the error queue, this way making it
+possible to later diagnose what went wrong with handling this particular
+message.</p>
+<h3 id="a-few-words-about-subscriptionsbindings">A few words about
+subscriptions/bindings</h3>
+<p>Queues are the basic vehicle of delivery for messages. Some queuing
+systems make it possible to receive messages from other “things”,
+e.g. from “topics” or from “subscriptions” (looking at you, Azure
+Service Bus!), but that’s kind of wonky, and Rebus will not help you do
+that.</p>
+<p>In the case of Azure Service Bus, Rebus will treat topics as topics
+(i.e. as “named hubs of interest”) and subscriptions as exactly that
+(which is also what RabbitMQ calls “binding”), which in turn means that
+a subscription BINDS a topic to a queue.</p>
+<p>In other words, with a suitable subscription in place, a queue can
+get to receive copies of messages published to a topic.</p>
+<p>We’ll talk some more about that in the chapter about routing!</p>
+<h2 id="routing">Routing</h2>
+<p>On of the bigger questions when working with messaging is this: Where
+do the messages go?</p>
+<p>To answer that, we should talk about message types. And not just
+“message types” as in “which .NET type does this particular data layout
+correspond to”, more like ARCHEtypes: Overarching categories that all
+message types can be divided into. From now on, we’ll call them
+archetypes, just to be clear about it.</p>
+<p>In the literature, different archetypes are described, where the most
+prominent examples are</p>
+<ul>
+<li>Command messages</li>
+<li>Event messages</li>
+<li>Document messages</li>
+</ul>
+<p>These message archetypes are usually used in different places in the
+code, and for different purposes. In the following section they will be
+described further.</p>
+<h3 id="message-types">Message types</h3>
+<p>Let’s start at the end: Document messages are data carriers,
+i.e. messages that simply transfer data. The idea about a documenbt
+message is not that the sender has any special agenda with it, it’s just
+that the sender wishes to make the data available, and so the data is
+transferred in one or more messages. It is then up to the receiver to
+decide what to do about it.</p>
+<p>In a way, document messages could be considered orthogonal to the
+command/event distinction, as commands could carry a lot of date, and so
+can events, so we’ll talk a little bit about them again in a bit.</p>
+<h4 id="command-messages">Command messages</h4>
+<p>Command messages are messages that tell someone to do something.
+Therefore, they will most often be used e.g. when someone needs someone
+else’s help with achieving a task.</p>
+<p>They are usually named in the imperative form,
+e.g. <code>ProcessOrder</code>, <code>FulfillPayment</code>,
+<code>MoveCaseToArchive</code>, etc.</p>
+<p>Generally, command messages will naturally be sent to one single –
+and only 1 – recipient, as that’s the one that provides the necessary
+service. E.g. if the command is <code>ProcessOrder</code>, the recipient
+could be the “Order Processor Service”, which has the “order_processor”
+input queue.</p>
+<h4 id="routing-commands">Routing commands</h4>
+<p>Rebus has an operation that is meant for routing commands: SEND. In
+code it looks like this:</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Send</span><span class="op">(</span><span class="kw">new</span> <span class="fu">ProcessOrder</span><span class="op">(...));</span></span></code></pre></div>
+<p>As you can see, there’s no destination specified in the code above,
+so Rebus needs to be told BEFOREHAND where to send messages of type
+<code>ProcessOrder</code> – that’s what “endpoint mappings” are for.
+Here’s how it’s done:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.(...)</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Routing</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">TypeBased</span><span class="op">()</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Map</span><span class="op">&lt;</span>ProcessOrder<span class="op">&gt;(</span><span class="st">&quot;order_processor&quot;</span><span class="op">))</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>With this endpoint mapping
+(<code>ProcessOrder =&gt; order_processor</code>) in place, the bus now
+knows which queue should be the destination when you send
+<code>ProcessOrder</code> commands.</p>
+<p>In some situations, it’s beneficial to cut the processing of
+something up into smaller increments each represented by a command for
+internal use in a service – for that purpose, Rebus has a special SEND
+LOCAL operation, which always sends to the sender’s own input queue:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">SendLocal</span><span class="op">(</span><span class="kw">new</span> <span class="fu">ProcessOrder</span><span class="op">(...));</span></span></code></pre></div>
+<p>Since the destination is always the sender’s own input queue, no
+endpoint mappings are necessary to do this.</p>
+<p>In other situations, it can be nice to be able to specify the
+destination more dynamically – that’s what the routing API is for! With
+it, you can specify the destination queue explicitly for each send
+operation:</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> routing <span class="op">=</span> bus<span class="op">.</span><span class="fu">Advanced</span><span class="op">.</span><span class="fu">Routing</span><span class="op">;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>await routing<span class="op">.</span><span class="fu">Send</span><span class="op">(</span><span class="st">&quot;alternative_order_processor&quot;</span><span class="op">,</span> <span class="kw">new</span> <span class="fu">ProcessOrder</span><span class="op">(...));</span></span></code></pre></div>
+<p>(here sending the <code>ProcessOrder</code> command to the
+“alternative_order_processor” queue).</p>
+<h4 id="event-messages">Event messages</h4>
+<p>Event messages are messages that tell the recipient that something
+has happened. Therefore, they will most often be sent when something did
+in fact happen, and this knowledge should be broadcast to the world.</p>
+<p>They are usually named in the past tense,
+e.g. <code>OrderProcessed</code>, <code>PaymentFulfilled</code>,
+<code>CaseMovedToArchive</code>, etc. As you can probably also see by
+now, it’s not uncommon that events follow commands, e.g. like</p>
+<ol type="1">
+<li>Someone sends command <code>ProcessOrder</code> to
+“order_processor”</li>
+<li>Order Processor Service processes the order</li>
+<li>Order Processor Service publishes event
+<code>OrderProcessed</code></li>
+</ol>
+<p>thus “surrounding” the business operation that they both refer
+to.</p>
+<h4 id="routing-events">Routing events</h4>
+<p>Routing events is slightly different from commands, as commands are
+sent directly to a queue. Events are PUBLISHED, and then a copy of the
+event is distributed to the input queue of anyone who SUBSCRIBED. This
+way, the routing of events is conceptually slightly higher level than
+routing commands: There’s a mapping table involved, and copies are
+distributed to 0..n destination queues.</p>
+<p>Here’s how it’s done with Rebus: Either use a transport that has
+native support for publish/subscribe (e.g. like Azure Service Bus or
+RabbitMQ), or configure a shared subscription storage somewhere (e.g. if
+you’re using AmazonSQS, MSMQ, Azure Storage Queues, etc.). Exactly how
+you configure a subscription storage is described in the next
+chapter.</p>
+<p>To subscribe to a message, the subscriber needs to call</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Subscribe</span><span class="op">&lt;</span>OrderProcessed<span class="op">&gt;();</span></span></code></pre></div>
+<p>which is usually done whenever the application starts up.
+Subscriptions are always persistent, so once this call has been made,
+the subscriber will receive all published <code>OrderProcessed</code>
+events in its input queue, for eternity, even though the subscriber is
+not running. It’s still good practice though to leave the call to
+<code>await bus.Subscribe&lt;OrderProcessed&gt;()</code> as part of the
+startup sequence of the subscriber, because this way it’s clear which
+events it has subscribed to.</p>
+<p>When the Order Processor Service then processed an order, it
+should</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Publish</span><span class="op">(</span><span class="kw">new</span> <span class="fu">OrderProcessed</span><span class="op">(...));</span></span></code></pre></div>
+<p>which will then have the bus distribute copies of the event to all
+subscribers.</p>
+<p>That’s basically all there is to it. 🙂 Underneath it all, Rebus uses
+“topic-based routing” to map published events to subscribers.
+Internally, Rebus will deduce a TOPIC like</p>
+<pre><code>OrderProcessorService.Messages.OrderProcessed, OrderProcessorService.Messages</code></pre>
+<p>from the <code>OrderProcessed</code> event type mentioned above –
+it’s a string that defaults to be the simple, assembly-qualified name of
+the .NET type (i.e. full type name, including namespace and assembly
+name, just stripped from version, culture, and public key token).</p>
+<p>This string then identifies the topic, which can then be referenced
+by both the publisher and the subscriber, in turn allowing them to find
+each other without either one of them knowing that other one exists.</p>
+<p>This is called</p>
+<div style="text-align:center">
+<p>👉 <em>Loose coupling</em> 👈</p>
+</div>
+<p>and it’s a great way for systems to communicate.</p>
+<h4 id="subscription-storage">Subscription storage</h4>
+<p>Some queuing systems (e.g. like Azure Service Bus and Rabbit) support
+topic-based routing out of the box. This way, you can provide your Rebus
+instance with a connection string for any of them and just let the
+transport handle the bindings between topics and queues.</p>
+<p>Other, more crude queuing systems, like AmazonSQS and MSMQ, do NOT
+support topic-based routing!</p>
+<p>But if you’re using Rebus, you’re in luck, because Rebus can
+“polyfill” this capability by configuring it with a subscription
+storage. Rebus will then use the subscription storage to map between
+topics and subscriber queues, thus enabling the exact same</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">// anywhere you like:</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Subscribe</span><span class="op">&lt;</span>SomeEvent<span class="op">&gt;();</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co">// also anywhere you like:</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Publish</span><span class="op">(</span><span class="kw">new</span> <span class="fu">SomeEvent</span><span class="op">(...));</span></span></code></pre></div>
+<p>experience with these transports too. Btw. a “subscription storage”
+is just a central database, that all your Rebus instances can then use
+as a central registry for mappings from topics to subscriber queues.
+Configuring one can be as simple as importing the Rebus.SqlServer NuGet
+package and then calling <code>StoreInSqlServer</code> in the
+<code>Subscriptions</code> configurer like so:</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Transport</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">UseAzureStorageQueues</span><span class="op">(...))</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Subscriptions</span><span class="op">(</span>s <span class="op">=&gt;</span> s<span class="op">.</span><span class="fu">StoreInSqlServer</span><span class="op">(...,</span> isCentralized<span class="op">:</span> <span class="kw">true</span><span class="op">))</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>PLEASE NOTE the use of <code>isCentralized: true</code> in the
+configuration – it means that all Rebus instances can expect to reach
+the same SQL Server instance, thus enabling subscribers to register
+themselves directly in the database when they call</p>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Subscribe</span><span class="op">&lt;</span>SomeEvent<span class="op">&gt;();</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">//           👆 will insert row like 👇</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">// | TOPIC                        | QUEUE            |</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">// | Messages.SomeEvent, Messages | subscriber_queue |</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">//</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co">// in the subscription database...</span></span></code></pre></div>
+<p>This is by far the simplest way of doing it, because the database
+simply works as a central registry of subscribers. This also provides a
+place to go look, if you want to see who is currently subscribed to
+what.</p>
+<p>Another mode is the “fully decentralized mode”, where subscribers do
+NOT have access to a subscription storage. In this mode, the queuing
+system is the only thing that is shared between publishers and
+subscriber, and so a subscriber must register its subscription by
+sending a message to the subscriber.</p>
+<p>To be able to do that, the subscriber must know the input queue name
+of the publisher, which you can tell it with an endpoint mapping:</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    configure <span class="op">=&gt;</span> configure</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.(...)</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">Routing</span><span class="op">(</span>t <span class="op">=&gt;</span> t<span class="op">.</span><span class="fu">TypeBased</span><span class="op">()</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">Map</span><span class="op">&lt;</span>OrderProcessed<span class="op">&gt;(</span><span class="st">&quot;order_processor&quot;</span><span class="op">))</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<p>Subscribers equipped with the endpoint mapping shown above can then
+go call:</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>await bus<span class="op">.</span><span class="fu">Subscribe</span><span class="op">&lt;</span>OrderProcessed<span class="op">&gt;();</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co">// but now this 👆 will send</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">// an internal SubscribeRequest to</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">// the publisher, asking it to sign</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">//    up the subscriber</span></span></code></pre></div>
+<p>thus making it possible for publishers to keep their subscription
+storage private.</p>
+<h4 id="message-modeling">Message modeling</h4>
+<h2 id="sagas">Sagas</h2>
+<ul>
+<li>Concurrency</li>
+<li>Idempotency</li>
+</ul>
+<h2 id="deferred-messages">Deferred messages</h2>
+<h3 id="local-timeout-manager">Local timeout manager</h3>
+<h3 id="external-timeout-manager">External timeout manager</h3>
+<h2 id="logging">Logging</h2>
+<h2 id="correlation-ids">Correlation IDs</h2>
+<h1 id="scenarios">Scenarios</h1>
+<h2 id="queue-up-work-to-cope-with-spikes-in-load">Queue up work to cope
+with spikes in load</h2>
+<h2 id="use-pubsub-messaging-to-decouple-systems">Use pub/sub messaging
+to decouple systems</h2>
+<h2 id="coordinate-asynchronous-processes-with-sagas">Coordinate
+asynchronous processes with sagas</h2>
+<p>Remember the distinction between “business” and “technical” level
+sagas.</p>
+<h2 id="channel-adapters">Channel adapters</h2>
+<h3
+id="enqueue-work-that-is-allowed-to-be-processed-asynchronously">Enqueue
+work that is allowed to be processed asynchronously</h3>
+<h3 id="publish-events-when-stuff-happens">Publish events when stuff
+happens</h3>
+<h3 id="receive-commands-and-reliably-process-them">Receive commands and
+reliably process them</h3>
+<h3 id="react-to-events-when-stuff-happens">React to events when stuff
+happens</h3>
+<h2 id="message-bridge">Message bridge</h2>
+<p>Hybrid applications etc etc.</p>
+<h3 id="into-the-cloud">Into the cloud</h3>
+<h3 id="out-of-the-cloud">Out of the cloud</h3>
+<h1 id="unit-testing">Unit testing</h1>
+<h2 id="testing-message-handlers">Testing message handlers</h2>
+<h2 id="using-fakebus-to-record-bus-events">Using <code>FakeBus</code>
+to record bus events</h2>
+<h2 id="using-sagafixture-to-test-your-sagas">Using
+<code>SagaFixture</code> to test your sagas</h2>
+<h2 id="larger-units">Larger units</h2>
+<p>Integration testing Rebus endpoints using in-mem persistence and
+queues.</p>
+<p>Could not find file ./src\06-advanced-topics.md</p>
+</body>
+</html>
