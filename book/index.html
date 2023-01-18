@@ -137,6 +137,7 @@ asynchronous message queue implementations</a>
 <li><a href="#idempotency-by-expiration">Idempotency by
 expiration</a></li>
 <li><a href="#true-idempotency">True idempotency</a></li>
+<li><a href="#message-ordering">Message ordering</a></li>
 </ul></li>
 <li><a href="#let-errors-happen">Let errors happen</a></li>
 </ul></li>
@@ -236,6 +237,34 @@ handlers</a></li>
 <code>SagaFixture</code> to test your sagas</a></li>
 <li><a href="#larger-units">Larger units</a></li>
 </ul></li>
+<li><a href="#advanced-topics">Advanced topics</a>
+<ul>
+<li><a href="#custom-routing">Custom routing</a></li>
+<li><a href="#msmq-and-scaling">MSMQ and scaling</a></li>
+<li><a href="#using-the-data-bus">Using the data bus</a></li>
+<li><a href="#synchronous-operations">Synchronous operations</a></li>
+<li><a href="#hosting">Hosting</a>
+<ul>
+<li><a href="#console-application">Console Application</a></li>
+<li><a href="#windows-service">Windows Service</a></li>
+<li><a href="#web-app">Web App</a>
+<ul>
+<li><a href="#in-the-web-site">In the web site</a></li>
+<li><a href="#as-an-azure-web-job">As an Azure Web Job</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#mixed-topics">Mixed topics</a>
+<ul>
+<li><a href="#queues-vs.-logs">Queues vs. logs</a>
+<ul>
+<li><a href="#ordering">Ordering</a></li>
+<li><a href="#message-processing">Message processing</a></li>
+<li><a href="#bootstrapping-subscribers">Bootstrapping
+subscribers</a></li>
+<li><a href="#storage">Storage</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="introduction">Introduction</h1>
@@ -260,7 +289,7 @@ born in 1979 and I live in Horsens in Denmark with my wife and our two
 sons. In addition to messing with computers, I like to run, play squash,
 brew, drink, and monger beers, listen to music and play the guitar,
 usually only a few of them simultaneously.</p>
-<p>Throughout my career as a software developer, I have had an intense
+<p>Throughout my career as a software developer, I have had an intense,
 yet pragmatic interest in distributed systems, which means that I have
 always thought that message queues and databases were pretty cool, and I
 have always tried to use them to produce simpler and more wholesome
@@ -283,17 +312,17 @@ managing your fleet of buses…), which in turn means that I have a
 commercial interest in spreading the word about Rebus.</p>
 <p>I am an open source hippie 🌻 by heart though. Rebus and all of its
 integration libraries would not be where they are today without the 100+
-contributors, who have contributed with their comments, suggestions,
-pull requests, etc, so I promise that Rebus will always be free for
-everyone to use! 🚌</p>
+contributors, who have contributed with their pull requests,
+suggestions, comments, etc, so I promise that Rebus will always be free
+for everyone to use! 🚌</p>
 <h2 id="disclaimer-of-non-creativity">Disclaimer of non-creativity</h2>
 <p>The last thing I want to say in this introduction is this: <strong>I
 didn’t discover or invent anything</strong>.</p>
-<p>Rebus is based on ideas already implemented in NServiceBus, which is
+<p>Rebus has drawn lots of inspiration from NServicebus, which is
 another great .NET service bus implementation, and all of the messaging
-patterns are described in the literature, where “Enterprise Integration
-Patterns” by Gregor Hohpe and Bobby Woolf in my memory is the most
-prominent specimen.</p>
+patterns implemented by Rebus are described in the literature, where
+“Enterprise Integration Patterns” by Gregor Hohpe and Bobby Woolf in my
+view is the most prominent place to look for these things.</p>
 <p>Some great writing about architecture quality attributes can be found
 in “Software Architecture In Practice” by Len Bass, Paul Clements, and
 Rick Kazman.</p>
@@ -303,7 +332,8 @@ say sounds like it could be true and/or clever in some way, then it
 probably comes from one of the aforementioned books. 🙃</p>
 <p>A few times I might postulate something and say “In MY experience,
 bla bla bla (…)”, which is just a work-related injury that stems from
-having worked as a consultant for many years… – I’m so sorry 🙄</p>
+having worked as a consultant for many years… – I apologize in advance.
+🙄</p>
 <p>This introduction is long enough already. Let’s go!</p>
 <h2 id="architecture-quality-attributes">Architecture quality
 attributes</h2>
@@ -322,9 +352,9 @@ necessarily evaluate them formally.</p>
 <p>Many of the quality attributes end with “ility”, e.g. “availability”,
 “durability”, etc., which is why they’re sometimes referred to as
 “ilities”.</p>
-<p>When you come across “ilities” in text, it <em>might</em> be an
-indication that there’s actually some though behind the architectural
-decisions that have been made 😉</p>
+<p>When you come across “ilities” in text, it <em>could</em> be an
+indication that someone actually took the time to put some thought into
+why certain decisione were made. 😉</p>
 <h2 id="messaging-patterns">Messaging patterns</h2>
 <p>When you’re designing distributed systems, it’s nice to be able to
 communicate clearly what your design consists of. That’s what messaging
@@ -336,11 +366,12 @@ wrong way around.</p>
 descriptions of patterns, which have emerged from anthropological
 studies of successful software systems. Thus they’re just a way to
 explain which concepts and contraptions were involved in solving some
-particular problem, thus contributing to building successful
-software.</p>
+particular problem in a good way, thus contributing to building
+successful software.</p>
 <p>It doesn’t mean that software will automatically be successful, if
 you can recognize a long list of patterns in it. But if your system IS
-successful – from an engineering point of view – I bet you can. 🙂</p>
+successful from a technical point of view, I bet you can find a couple.
+🙂</p>
 <p>In this book, several well-known messaging patterns will be mentioned
 and/or explained to some degree with concrete examples on how they are
 manifested in code using Rebus as an example.</p>
@@ -363,7 +394,7 @@ tight, condensed, and unambiguous language.</p>
 independent components that make our your system are able to
 communicate.</p>
 <p>This usually involves some kind of remoting, e.g. in the form of HTTP
-APIs and message queues. Another way to look at it, would be to divide
+APIs and message brokers. Another way to look at it, would be to divide
 the communication into whether it’s <em>synchronous</em> or
 <em>asynchronous</em>.</p>
 <h3 id="synchronous-communication">Synchronous communication</h3>
@@ -381,11 +412,18 @@ after having sent a request, then the protocol is synchronous.</p>
 <em>messaging middleware</em> is involved, i.e. a mediating party must
 somehow help with preserving state in the face of failures like coding
 errors, resource depletion, network interruptions, hardware failures,
-power loss, etc etc etc 😱</p>
+power loss, etc etc etc. 😱</p>
 <p>Messaging middleware often provides its service in the form of
 <em>durable asynchronous message queues</em> as its most basic
 communication channel, and that is exactly the type of channel this book
 is about.</p>
+<p>Over the recent years, a variation of the traditional message queue
+has become popular in the form of the log-based brokers, Kafka, Pulsar,
++ probably a couple more I don’t know about. They offer asynchronous
+communication too, and if you squint a little, they may also seem like
+they’re very similar to message queues. Once you get closer though, you
+will find a bunch of differences, which I’ll dive a little bit into in
+<a href="#queues-vs.-logs">Queues vs. logs</a>.</p>
 <h4 id="durable-asynchronous-message-queues">Durable asynchronous
 message queues</h4>
 <p>To be entirely clear, let’s go through each word and see what they
@@ -465,8 +503,7 @@ means that a message is not deleted when it is received, it is just
 invisible to other consumers for a while. If the recipient then
 acknowledges (“ACKs”) the message within that timeframe, the message
 gets deleted. If not, the message becomes visible again for other
-consumers to receive. This way, it’s possible to build software that
-NEVER loses a message.</p>
+consumers to receive.</p>
 <h5 id="azure-service-bus">Azure Service Bus</h5>
 <p>Azure Service Bus is the next tier in Azure’s messaging offerings,
 bringing even more sophisticated routing capabilities and better APIs to
@@ -481,8 +518,13 @@ TCP/IP things on the internet).</p>
 stuff too, like e.g. the “Relay Service”, which is irrelevant in this
 context.</p>
 <p>Azure Service Bus also has some pretty non-standard features, like
-e.g. the ability to “query” messages received on a subscription for
-messages that satisfy some criteria.</p>
+e.g. the ability to filter messages received on a subscription for
+messages that satisfy some criteria, thus adding an extra level of
+filtering beyond what is provided by the topic-based pub/sub model.</p>
+<p>Similar to Azure Storage Queues, Azure Service Bus implements
+lease-based message transactions, meaning that messages must be ACKed
+within some specific timeframe to be deleted from the queue, otherwise
+they will become visible again.</p>
 <h5 id="msmq">MSMQ</h5>
 <p>MSMQ (or “Microsoft Message Queuing”) is a queuing system, which is
 built into Windows. It has been available since Windows 2000, and it is
@@ -491,7 +533,7 @@ skip the entire <code>System.Messaging</code> namespace when porting
 code from old .NET Framework to .NET Core/.NET, so there’s no longer
 support in .NET for using MSMQ.</p>
 <p>This is a shame, because MSMQ is pretty nice queuing system, and I
-know many companies around the world are still using it.</p>
+know of many companies around the world are still using it.</p>
 <p>To enable it in Windows, visit the appropriate “Add/Remove Windows
 Features” area of the Windows version you are using, and put a checkmark
 next to “Message Queuing”.</p>
@@ -522,18 +564,22 @@ pitfalls too, especially around its master-master cluster configuration.
 You should read <a
 href="https://aphyr.com/posts/315-jepsen-rabbitmq">what Kyle Kingsbury
 says</a> before diving into this mode of operation.</p>
+<p>Also it provides many non-durable ways of sending messages, which
+oftens gets people hooked on it (“Wow, RabbitMQ is FAST!!”) and then it
+turns out that what they thought were safely handled by the broker was
+actually just stored in memory of the receiving node and would be have
+been lost if it had crashed.</p>
 <p>To me, RabbitMQ is the quintessential AMQP implementation, although I
-think it implements some version of AMQP less than 1, which is a pretty
-different thing from AMQP 1.</p>
-<p>What this means is that RabbitMQ’s messaging model is build around
-the notion of “exchanges”, “topics”, and “queues”.</p>
+think it implements some version of AMQP less than 1 (which is a pretty
+different thing from AMQP 1), because the messaging model is built
+around the notion of “exchanges”, “topics”, and “queues”.</p>
 <p>An exchange is where you deliver your messages, and each message then
 has a “routing key” attached to it. The type of exchange then decides
 how the routing key is interpreted.</p>
 <p>If e.g. the exchange is of the “topic” type, then the routing key is
 interpreted as a topic, meaning that a copy of the message gets sent to
 all queues subscribed to that topic.</p>
-<p>That’s basically it 🙂 RabbitMQ can do more stuff, and even more if
+<p>That’s basically it. 🙂 RabbitMQ can do more stuff, and even more if
 you extend it with plugins.</p>
 <h5 id="amazon-sqs">Amazon SQS</h5>
 <p>Amazon SQS is a pretty simple queuing system, which is part of AWS.
@@ -546,8 +592,7 @@ to so pub/sub messaging with it.</p>
 <h5 id="relational-databases">Relational databases</h5>
 <p>If all you have is a relational database (e.g. if your operations
 department are not keen on introducing message brokers and stuff into
-their pen), then you can simply use tables as if they were message
-queues.</p>
+their pen), then you can use tables as if they were message queues.</p>
 <p>A message is just a chunk of data meant for some specific recipient
 to receive, so it’s pretty easy to come up with a model where
 e.g. tables represent queues and rows are messages, and then each
@@ -572,9 +617,9 @@ best practives, caveats, etc.</p>
 <p>If that’s your impression, then you are absolutely correct.</p>
 <p>This is one of the areas where Rebus finds its justification. 😎
 Because Rebus lets you use a sensible subset of the functionality
-provided by the queuing systems, possibly “polyfilling” where features
-are missing, thus enabling a faily consistent experience, in turn making
-your code portable.</p>
+provided by the queuing systems, possibly “polyfilling” in a few places
+where features are missing, thus enabling a faily consistent experience,
+in turn making your code portable.</p>
 <p>If you think this sounds cool, read on! 👇</p>
 <h3 id="what-is-rebus">What is Rebus?</h3>
 <p>Rebus is a .NET library that comes in the form of a NuGet
@@ -636,8 +681,12 @@ thread and a tiny fraction of your CPU, because it is based on .NET
 and the .NET thread pool to schedule their execution.</p>
 <p>Last, but not least: It’s quite pleasant to work with. Its error
 messages are explanatory and helpful. 😇</p>
-<p>All this comes at a price, of course: $ 0 (Rebus is MIT-licensed, and
-you can do with it whatever you want).</p>
+<p>All this comes at a price, of course: $ 0. Rebus is MIT-licensed, and
+you can do with it whatever you want. Of course I would personally love
+it if you became a <a href="https://pro.rebus.fm/">Rebus Pro</a>
+subscriber 😉, but I also believe that many good things will happen in
+the future when more people are using Rebus and are happy in doing
+so.</p>
 <h3 id="the-rebus-philosopy">The Rebus Philosopy</h3>
 <p>While Rebus is pretty flexible and extremely extensible in some
 regards, it does build on an opinionated view of the world.</p>
@@ -656,8 +705,10 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb5-1"><a href="
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Extreme                                                 Safety</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>performance                                             of use</span></code></pre></div>
 <p>This means that many things are taken care of automatically, and
-there’s no built-in way to e.g. relax the durability of messages, reduce
-the level of delivery guarantee, etc. to achieve better performance.</p>
+messages are durable by default. It’s possible with some transports to
+relax durability by adding the <code>rbs2-express</code> header to a
+message, but it’s a thing you would have to be pretty explicit
+about.</p>
 <p>On the scale between “extreme performance” and “developer
 friendliness”, Rebus has positioned itself around here:</p>
 <div class="sourceCode" id="cb6"><pre
@@ -666,8 +717,8 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb6-1"><a href="
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Extreme                                              Developer</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>performance                                       friendliness</span></code></pre></div>
 <p>meaning that Rebus exposes programming APIs that are not necessarily
-the most efficient from a performance view, they are meant to be
-friendly to the developer and thus pleasant to use.</p>
+the most efficient from a performance point of view, they are meant to
+be friendly to the developer and thus pleasant to use.</p>
 <p>On this last scale between “extreme performance” and “clean and
 testable code”, Rebus has positioned itself around here:</p>
 <div class="sourceCode" id="cb7"><pre
@@ -676,10 +727,10 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Extreme                                              Clean and</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>performance                                      testable code</span></code></pre></div>
 <p>because Rebus goes to great lengths to prevent abstractions from
-leaking, or let you program your way into a corner in any other way, by
+leaking or let you program your way into a corner in any other way by
 tying yourself to the concrete technologies underneath Rebus, just to
 gain better performance.</p>
-<p><em>Conclusion</em>: If you’re in the messaging game for extreme
+<p><em>Summary</em>: If you’re in the messaging game for extreme
 performance, you should probably not pick Rebus.</p>
 <p>It does not mean that Rebus is slow, it just means that if your
 objective is to push the queuing system to its MAX, then you should
@@ -787,8 +838,8 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb10-1"><a href=
 <p>But it also means that there is a risk that your “work tx” can be
 executed more than once, as we have seen.</p>
 <p>This is called “at least once”-delivery, which means that messages
-are guaranteed to be delivered once, but you might be “lucky” to receive
-them more than once.</p>
+are guaranteed to be delivered once - but then if something fails, you
+will get to receive them more 2 or more times.</p>
 <p>Out of all of the available delivery guarantees</p>
 <ul>
 <li>“at most once”</li>
@@ -798,7 +849,7 @@ them more than once.</p>
 <p>we prefer “at least once”, because “at most once” means that messages
 will be LOST if something fails, and “exactly once” is IMPOSSIBLE (in
 the general case) as per <a
-href="https://en.wikipedia.org/wiki/CAP_theorem">the CAP theorem</a>
+href="https://en.wikipedia.org/wiki/CAP_theorem">the CAP theorem</a>.
 🤥</p>
 <p>With “at least once”-delivery, we are guaranteed to get at least one
 chance to handle each message, so we just need to gracefully handle the
@@ -813,7 +864,7 @@ message. So how do we do that?</p>
 <p>In math, an “idempotent” operation is a function that yields the same
 result, no matter how many times it is called with the same input. We
 borrow this word, and then we aim for making our message handling
-itempotent!</p>
+idempotent!</p>
 <p>How we exactly go about doing that certainly depends a lot on which
 kind of work we are doing.</p>
 <h5 id="consciously-ignore-it">Consciously ignore it</h5>
@@ -824,7 +875,9 @@ or a log aggregator, then the fact that the log statements go into the
 files or the aggregator is a side effect. But chances are that we only
 use this logging for debugging and statistics, so it doesn’t bring our
 system into a bad state that the same (or different?) log statements are
-generated during the processing of a re-delivered message.</p>
+generated during the processing of a re-delivered message - in fact,
+it’s nice if your trace logs are repeated, so you can see afterwards
+that a message delivery was retried.</p>
 <h5 id="natural-idempotence">Natural idempotence</h5>
 <p>In other cases, we may be so lucky that the nature of the work we are
 doing is naturally idempotent, or maybe we determine that the
@@ -856,9 +909,9 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb11-1"><a href=
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>thus ignoring re-delivered and outdated events.</p>
 <p>In fact, this solution has the nice property that it also handles
-re-ordered messages: Even though most message queues are FIFO, you
-should never count on FIFO in a strict mathematical sense, because many
-things in the real world can break that. For example, receiving messages
+reordered messages: Even though most message queues are FIFO, you should
+never count on FIFO in a strict mathematical sense, because many things
+in the real world can break that. For example, receiving messages
 concurrently (multiple processes and/or multiple threads), messages
 travelling over different routes thus taking different times to reach
 their destination, messages having spent time in “dead-letter queues”,
@@ -872,6 +925,29 @@ a row into this table when handling a message.</p>
 <p>We could then detect a re-delivered message by looking up the message
 ID, and then we can take appropriate measures if we detect a
 re-delivered message.</p>
+<h5 id="message-ordering">Message ordering</h5>
+<p>Even though most (if not all) queueing systems are FIFO, i.e. they
+adhere to the “first in first out” principle, you should not count too
+much on it, as there’s several normal and good reasons why messages can
+be more or less reordered.</p>
+<p>To achieve higher message processing rates, it’s pretty normal to
+allow for some kind of parallelism when processing incoming messages.
+Rebus defaults to allowing 5 handlers to run concurrently, so the order
+in which handlers are going to do their things is going to be pretty
+non-deterministic simply because of that. Factor in the ability to do <a
+href="https://www.enterpriseintegrationpatterns.com/CompetingConsumers.html">competing
+consumers</a>, this way distributing load to multiple nodes, message
+handlers end up running in an even more unpredictable order.</p>
+<p>Lastly, it’s pretty normal for message handling to sometimes fail,
+which ultimately ends up moving the problematic message to a dead-letter
+queue. At a later time, the message is probably moved back to its source
+queue, which - as you can imagine - has potential for messing up the
+ordering even more!</p>
+<p>In summary: Build your systems with tolerance for some degree of
+message reordering, maybe even to tolerate messages in any order. If you
+think of each message as an <em>operand</em> in algebra, you could say
+that systems need to be <a
+href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>.</p>
 <h4 id="let-errors-happen">Let errors happen</h4>
 <p>Another design decision made in Rebus is that <em>you should not
 handle (most) errors</em>, you should let exceptions occur.</p>
@@ -938,8 +1014,8 @@ adhere to this pattern.</p>
 <h3 id="two-bus-modes">Two bus modes</h3>
 <p>Rebus can run in two modes</p>
 <ul>
-<li>“normal” mode – capable of both sending and receiving messages</li>
-<li>“one-way client” model – only capably of SENDING messages</li>
+<li>“normal” mode – capable of both sending and receiving messages.</li>
+<li>“one-way client” mode – only capably of sending messages.</li>
 </ul>
 <p>The configuration shown above uses the transport configuration
 extension</p>
@@ -950,7 +1026,9 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb18-1"><a href=
 configure a one-way client with Azure Service Bus, I would use the</p>
 <div class="sourceCode" id="cb19"><pre
 class="sourceCode csharp"><code class="sourceCode cs"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>t<span class="op">.</span><span class="fu">UseAzureServiceBusAsOneWayClient</span><span class="op">(</span>connectionString<span class="op">)</span></span></code></pre></div>
-<p>extension instead.</p>
+<p>extension instead. Most transports, if not all, follow this pattern:
+<code>Use(...)</code> for the normal mode, and
+<code>Use(...)AsOneWayClient</code> for the one-way client mode.</p>
 <h2 id="realistic-example">Realistic example</h2>
 <p>To show a more realistic example, one could imagine a Rebus endpoint
 hosted with Microsoft’s generic host in a web app, using RabbitMQ as the
@@ -1079,7 +1157,7 @@ you’re starting out with any of the new project templates for .NET
 Core/.NET for either web apps, daemon apps, or console jobs, because
 Microsoft’s generic host uses it internally. Also, it’s a pretty neat
 container that can do most of what even seasoned DI container users
-want</p>
+want.</p>
 <p>The code samples shown so far with</p>
 <div class="sourceCode" id="cb24"><pre
 class="sourceCode csharp"><code class="sourceCode cs"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">.</span><span class="fu">AddRebus</span><span class="op">(</span></span>
@@ -1697,6 +1775,170 @@ to record bus events</h2>
 <h2 id="larger-units">Larger units</h2>
 <p>Integration testing Rebus endpoints using in-mem persistence and
 queues.</p>
-<p>Could not find file ./src\06-advanced-topics.md</p>
+<h1 id="advanced-topics">Advanced topics</h1>
+<h2 id="custom-routing">Custom routing</h2>
+<p>Implement routing of transport messages.</p>
+<h2 id="msmq-and-scaling">MSMQ and scaling</h2>
+<p>Something about implementing an alternative to “competing consumers”
+with Rebus.</p>
+<h2 id="using-the-data-bus">Using the data bus</h2>
+<p>Move arbitrarily large chunks of data with the data bus.</p>
+<h2 id="synchronous-operations">Synchronous operations</h2>
+<p>Using Rebus from deep within a call hierarchy e.g. in ASP.NET and
+WPF.</p>
+<h2 id="hosting">Hosting</h2>
+<p>Hosting Rebus-based applications in various environments. Remember
+point about some kind of manager on the host that ensures that crashed
+applications be restarted.</p>
+<h3 id="console-application">Console Application</h3>
+<h3 id="windows-service">Windows Service</h3>
+<h3 id="web-app">Web App</h3>
+<h4 id="in-the-web-site">In the web site</h4>
+<h4 id="as-an-azure-web-job">As an Azure Web Job</h4>
+<h1 id="mixed-topics">Mixed topics</h1>
+<h2 id="queues-vs.-logs">Queues vs. logs</h2>
+<p>From afar, queue-based brokers and log-based brokers may seem
+interchangeable, and in theory you <em>could</em> model one with the
+other – but they have a bunch of differences that would make it
+difficult and pretty wonky outside of an academic setting to try to
+switch from queues to logs or from logs to queues in most realistic
+scenarios!</p>
+<p>The thing is, they have some very different properties, which end up
+being reflected in how you will model your messages and message
+correspondances.</p>
+<h3 id="ordering">Ordering</h3>
+<p>Log-based brokers provide a strict guarantee of the ordering of
+messages, messages are not deleted as they are read, and consumers
+themselves keep track of which messages they have read, which they can
+easily do because messages are numbered sequentially. This means that
+consumers can be absolutely sure that they have never processed one
+particular message before, especially if they chose to commit their read
+positions transactionally along with whatever work they’re doing.</p>
+<p>To distribute work among multiple processes, log-based brokers offer
+the concept of “consumer groups”, which means that the broker helps with
+distributing messages among multiple consumer instances. Since this
+introduces concurrency and non-determinism between individual consumer
+instances, it requires that the message producer provides each message
+with a “partition key”, which the broker then hashes and uses to assign
+the message to a “partition”, which in turn gets assigned/revoked to
+individual consumer instances as they come and go, thus guaranteeing
+that messages within each partition key are consumed by the same
+consumer instance. Therefore, consumers can rely on message ordering
+within each partition key.</p>
+<p>Because of the strict ordering, if a log-based consumer encounters an
+error (e.g. a <code>NullReferenceException</code> 😅), it has no other
+choice than to stop processing messages if ordering must be preserved.
+Of course it <em>could</em> write the poison message to an error topic,
+or it could simply skip processing the message, but that would ruin the
+ordering.</p>
+<p>Queue-based brokers do NOT provide a strict guarantee of message
+ordering. Or, to be more precise: They often do, but you are advised to
+not actually count on it too much. The thing is, you’ll almost always
+want to have some kind of parallelism enabled, either within each
+consumer instance, or by deploying <a
+href="https://www.enterpriseintegrationpatterns.com/CompetingConsumers.html">competing
+consumers</a>, which causes non-deterministic ordering of messages, at
+least within messages that are close to each other in the queue.</p>
+<p>…And then a message fails to be processed and gets moved to the
+dead-letter queue. 😨 Then the consumers happily continue processing all
+the other messages, and then after an hour or so, when you have fixed
+the bug in the consumer, you then move the message back into the
+consumer’s queue (the message’s “source queue”), which causes an
+hour-old message to be processed AFTER all the other messages.</p>
+<p>Queue-based systems must be able to handle this!</p>
+<p>In practice, if you want to be VERY strict about it, it can be quite
+difficult to guarantee across the board, and doing so would require
+sacrificing some of the nice things about queue-based messaging. So, in
+practice, you’ll usually be strict about it in a few places and then
+tolerate reordered messages to an acceptable degree in all the other
+places.</p>
+<p>Which degress is then acceptable? Only you, The Modeler Of The System
+And Its Message Correspondances can know that. 😉 Sometimes you can get
+away with structuring your domain model so that ordered message
+processing is not even required – this is the best thing to do, because
+then each message can be processed individually, and you don’t have to
+worry. Other tricks, like comparing state, timestamps, revision numbers,
+etc. can also be employed.</p>
+<h3 id="message-processing">Message processing</h3>
+<p>Queue-based consumers will usually receive and handle one single
+message at a time, and then concurrency is used to increase throughput
+by increasing parallelism, but the individual consumer deals with a
+single message at a time.</p>
+<p>This is neat, because the handling of the message can be treated as a
+single <a
+href="https://martinfowler.com/eaaCatalog/unitOfWork.html">unit of
+work</a>: Either it is successfully completed, or it fails!</p>
+<p>It lends itself very well to the concepts available in C#, for
+example we can</p>
+<ul>
+<li>use a class to model the message</li>
+<li>use another class to model the handler for that particular message
+type</li>
+<li>use dependency injection to inject the necessary dependencies</li>
+<li>ACK/NACK the message depending on whether an exception was
+thrown</li>
+</ul>
+<p>which is neat when writing message handling code, as data (the
+message) and logic (the message handler) are clearly represented, can be
+easily understood, can be exercised in automated tests, etc.</p>
+<p>With log-based brokers, consumers will usually be able to receive
+messages in batches, which makes it possible to achieve much higher
+throughput than if messages were received individually – but then the
+consumer has a BATCH of messages to handle, e.g. 10, 100, 1000, or 100k,
+which then requires that the consumer makes up its mind about how to
+model its unit of work boundary.</p>
+<p>Does it handle the messages sequentially, one at a time? This way,
+each message can succeed individually, and if the last one fails, at
+least the preceding messages were processed. This will most likely be
+slow though, because there’s no parallelism.</p>
+<p>Does it handle the messages in parallel? This will mess up the
+ordering of the messages, so probably no.</p>
+<p>Does it create one large unit of work for the entire batch (or for
+chunks of the batch)? This can be great, but then if the last message
+fails, the entire batch (or the chunk) could not be processed.</p>
+<p>In practice, you’ll probably find that message handling code looks
+very different between queue-based consumers and log-based consumers.
+🙂</p>
+<h3 id="bootstrapping-subscribers">Bootstrapping subscribers</h3>
+<p>When you’re deploying a new subscriber into a system with event-based
+messages, you almost always have to put some thought into how the
+subscriber should handle the fact that so much history has gone by
+without it receiving one single event.</p>
+<p>In a queue-based environment, the subscriber has no way to get the
+history of events, so it may require that you seed its database (if it
+has one) with a one-off job or some artificially generated event
+messages.</p>
+<p>With log-based brokers, depending on the configuration, topics may
+contain all of the history that a new subscriber needs, and so this can
+often be fairly easy, maybe even trivial, to introduce new
+subscribers.</p>
+<p>…which leads me to:</p>
+<h3 id="storage">Storage</h3>
+<p>This is probably more on the OPS side of the “Queues
+vs. logs”-discussion, but in these DevOps days we should also talk about
+this. 🙂 + it also has a connection to <a
+href="#bootstrapping-subscribers">the subscriber bootstrapping
+problem</a>.</p>
+<p>With queue-based brokers you’ll probably have to think only a little
+bit about storage, maybe by deciding that “OK we’ll just say that the
+maximum size of each queue is 10 GB”, or something like that, and then
+that will be enough in practice to satisfy all of your storage needs.
+When messages are put into the queue they subtract a little bit from the
+queue’s available storage, and once a consumer takes a message out of
+the queue and ACKs having processed it, it adds a little bit back to the
+available storage for that queue again.</p>
+<p>With log-based brokers you will have to decide how much history you
+allocate space for (probably per topic), e.g. you can decide to store 7
+days of messages, or you can decide to store all messages since the
+beginning of time. To complement this, you can also decide on a
+“compaction strategy”, which basically consists of deciding on a key of
+the message within which the broker guarantees to always keep at least
+the last one – this way the broker can optimise storage use by removing
+old messages within a specific key value.</p>
+<p>As you can probably see, you can remove the bootstrapping problem
+completely, or you can reduce it by providing some limited history of
+events to new subscribers. Or you can of course still have situations
+where the stored history is not enough, and you will need to seed the
+databases of subscribers manually somehow. YMMV 😉</p>
 </body>
 </html>
