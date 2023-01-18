@@ -569,10 +569,10 @@ oftens gets people hooked on it (“Wow, RabbitMQ is FAST!!”) and then it
 turns out that what they thought were safely handled by the broker was
 actually just stored in memory of the receiving node and would be have
 been lost if it had crashed.</p>
-<p>To me, RabbitMQ is the quintessential AMQP implementation, although I
-think it implements some version of AMQP less than 1 (which is a pretty
-different thing from AMQP 1), because the messaging model is built
-around the notion of “exchanges”, “topics”, and “queues”.</p>
+<p>To me, RabbitMQ is the quintessential AMQP implementation, because
+the messaging model is built around the notion of “exchanges”, “topics”,
+“bindings”, and “queues”. It should be noted though that it implements
+AMQP 0.9.1, which is a pretty different thing from AMQP 1.</p>
 <p>An exchange is where you deliver your messages, and each message then
 has a “routing key” attached to it. The type of exchange then decides
 how the routing key is interpreted.</p>
